@@ -50,6 +50,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .wb{background:rgba(245,158,11,.1);border:1px solid var(--acc);border-radius:10px;padding:1rem;font-size:.85rem;color:var(--accL);margin:1rem 0}
 .ib{background:rgba(59,130,246,.1);border:1px solid var(--info);border-radius:10px;padding:1rem;font-size:.85rem;color:#93c5fd;margin:1rem 0}
 .eb{background:rgba(239,68,68,.1);border:1px solid var(--err);border-radius:10px;padding:1rem;font-size:.85rem;color:#fca5a5;margin:1rem 0}
+.sb{background:rgba(34,197,94,.1);border:1px solid var(--ok);border-radius:10px;padding:1rem;font-size:.85rem;color:#86efac;margin:1rem 0}
 .okb{background:rgba(16,185,129,.1);border:1px solid var(--ok);border-radius:10px;padding:1rem;font-size:.85rem;color:#6ee7b7;margin:1rem 0}
 .rt{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.88rem}
 .rt th,.rt td{padding:.55rem .9rem;text-align:left;border-bottom:1px solid var(--brd)}
@@ -818,18 +819,27 @@ function doCalculation(){
   // === GÉOMÉTRIE ===
   const nTubes=Math.ceil(A_design/(Math.PI*tubeOD*Ltube));
   const nTubesPerPass=Math.ceil(nTubes/nPasses);
-  const Ds=tubeOD*Math.sqrt(nTubes/(0.93*0.785))/0.85*tubePitch/tubeOD;
-  const Ds_r=Math.ceil(Ds*1000/50)*50/1000;
+  const Ds_min=tubeOD*Math.sqrt(nTubes/(0.93*0.785))/0.85*tubePitch/tubeOD;
+  let Ds_r=Math.ceil(Ds_min*1000/50)*50/1000;
 
-  // Vitesses
+  // Vitesses tubes (indépendant du diamètre calandre)
   const vTube=(cFlow/3600)/(cf.rho*nTubesPerPass*Atube);
-  const shellArea=Ds_r*(tubePitch-tubeOD)*0.4;
-  const vShell=(hFlow/3600)/(hf.rho*Math.max(shellArea,0.001));
-
-  // ΔP
   const fT=0.046*Math.pow(Math.max(Re_t,1000),-0.2);
   const dP_tube=(4*fT*Ltube/tubeID+4)*nPasses*cf.rho*vTube*vTube/2/1000;
-  const dP_shell=hf.rho*vShell*vShell/2*(Ltube/(0.4*Ds_r)+2)*0.5/1000;
+
+  // Auto-dimensionnement calandre : itérer Ds jusqu'à ΔP_shell ≤ ΔP_max
+  const dPshellMax=val('dPutil');
+  const Ds_max=2.5; // 2500 mm max
+  let shellArea,vShell,dP_shell;
+  let shellAutoSized=false;
+  for(let iter=0;iter<50;iter++){
+    shellArea=Ds_r*(tubePitch-tubeOD)*0.4;
+    vShell=(hFlow/3600)/(hf.rho*Math.max(shellArea,0.001));
+    dP_shell=hf.rho*vShell*vShell/2*(Ltube/(0.4*Ds_r)+2)*0.5/1000;
+    if(dP_shell<=dPshellMax||Ds_r>=Ds_max)break;
+    Ds_r+=0.05; // +50mm par palier
+    shellAutoSized=true;
+  }
 
   // ε-NTU
   const Ch=hFlow/3600*hf.cp*1000;
@@ -908,7 +918,7 @@ function doCalculation(){
     LMTD,F,LMTD_c,Uo:Uo_final,Uref,A_net,A_design,
     hi,ho,kWall,foulH,foulC,
     nTubes,nPasses,nTubesPerPass,tubeOD:tubeOD*1000,tubeID:tubeID*1000,Ltube,
-    Ds:Ds_r*1000,tubePitch:tubePitch*1000,
+    Ds:Ds_r*1000,Ds_min:Math.ceil(Ds_min*1000/50)*50,tubePitch:tubePitch*1000,shellAutoSized,
     vTube,vShell,Re_tube:Re_t,dP_tube,dP_shell,
     NTU,Cr,epsilon,Cmin,Cmax,
     hxType,hxTag,hxReason,hxAlt,temaType,
@@ -984,8 +994,9 @@ function renderResults(){
     <div class="ri"><div class="rv" style="color:${dp1OK?'var(--ok)':'var(--err)'}">${fmt(R.dP_tube,1)}</div><div class="rl">ΔP tubes</div><div class="ru">kPa</div></div>
     <div class="ri"><div class="rv" style="color:${dp2OK?'var(--ok)':'var(--err)'}">${fmt(R.dP_shell,1)}</div><div class="rl">ΔP calandre</div><div class="ru">kPa</div></div>`;
   let alerts='';
+  if(R.shellAutoSized)alerts+='<div class="sb">✅ Ø calandre auto-ajusté de '+fmt(R.Ds_min,0)+' → '+fmt(R.Ds,0)+' mm pour respecter ΔP ≤ '+val('dPutil')+' kPa.</div>';
   if(!dp1OK)alerts+='<div class="eb">⚠️ ΔP tubes dépasse la limite. Augmenter le nombre de tubes ou réduire les passes.</div>';
-  if(!dp2OK)alerts+='<div class="eb">⚠️ ΔP calandre dépasse la limite. Augmenter le diamètre calandre.</div>';
+  if(!dp2OK)alerts+='<div class="eb">⚠️ ΔP calandre dépasse la limite (Ø max 2500 mm atteint). Réduire le débit ou augmenter la surface.</div>';
   if(R.vTube>3)alerts+='<div class="wb">Vitesse tubes élevée ('+fmt(R.vTube,1)+' m/s) — risque d\'érosion.</div>';
   if(R.vTube<0.5&&R.vTube>0)alerts+='<div class="wb">Vitesse tubes faible ('+fmt(R.vTube,2)+' m/s) — risque d\'encrassement.</div>';
   document.getElementById('hydraulicAlerts').innerHTML=alerts;
