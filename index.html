@@ -32,6 +32,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .fg select option{background:var(--bg2);color:var(--t1)}
 .fg .unit{font-size:.72rem;color:var(--t3);font-family:'Space Mono',monospace}
 .fg>div{display:flex;flex-direction:column;gap:.3rem}
+.fg input:disabled,.fg select:disabled{opacity:.4;cursor:not-allowed}
 .btn{padding:.75rem 1.8rem;border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.92rem;cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:.4rem}
 .btn-p{background:linear-gradient(135deg,var(--acc),var(--accD));color:var(--bg)}
 .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,158,11,.3)}
@@ -53,23 +54,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .rt{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.88rem}
 .rt th,.rt td{padding:.55rem .9rem;text-align:left;border-bottom:1px solid var(--brd)}
 .rt th{color:var(--acc);font-weight:600;text-transform:uppercase;font-size:.73rem;letter-spacing:.4px}
-.rs{border-left:3px solid var(--acc);padding-left:1.4rem;margin-bottom:1.4rem}
-.rs h3{font-family:'Playfair Display',serif;margin-bottom:.4rem}
-.rs p,.rs li{color:var(--t2);line-height:1.65;font-size:.9rem}
 .tag{display:inline-block;padding:.15rem .5rem;border-radius:5px;font-size:.7rem;font-weight:600;margin-left:.4rem}
 .tag-st{background:rgba(59,130,246,.2);color:#93c5fd}
 .tag-phe{background:rgba(16,185,129,.2);color:#6ee7b7}
-.tag-dp{background:rgba(168,85,247,.2);color:#c4b5fd}
-.tag-ac{background:rgba(245,158,11,.2);color:#fbbf24}
 .tag-sp{background:rgba(239,68,68,.2);color:#fca5a5}
+.tag-ac{background:rgba(245,158,11,.2);color:#fbbf24}
 .loading{display:none;position:fixed;inset:0;background:rgba(10,14,26,.88);z-index:1000;justify-content:center;align-items:center;flex-direction:column;gap:1.2rem}
 .loading.show{display:flex}
 .spinner{width:55px;height:55px;border:3px solid var(--brd);border-top-color:var(--acc);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .lt{font-size:1rem;color:var(--acc);text-align:center}
 .phase-fields{display:none}.phase-fields.show{display:grid}
-.side-label{font-family:'Playfair Display',serif;font-size:1rem;color:var(--acc);border-bottom:1px solid var(--brd);padding-bottom:.5rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--brd);border-radius:3px}
+.mode-switch{display:flex;gap:2px;background:var(--bg2);border-radius:10px;padding:3px;margin-bottom:1rem}
+.mode-btn{flex:1;padding:.5rem .8rem;border:none;background:none;color:var(--t2);cursor:pointer;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;transition:all .3s;text-align:center}
+.mode-btn.active{background:var(--acc);color:var(--bg);font-weight:600}
+.supplier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
 .supplier-card{background:var(--inp);border:1px solid var(--brd);border-radius:11px;padding:1.2rem;transition:border-color .3s}
 .supplier-card:hover{border-color:var(--acc)}
 .supplier-card h4{color:var(--acc);margin-bottom:.3rem}
@@ -77,7 +76,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .supplier-card .spec{font-size:.85rem;color:var(--t2);margin:.4rem 0}
 .supplier-card a{color:var(--accL);text-decoration:none;font-size:.82rem}
 .supplier-card a:hover{text-decoration:underline}
-.supplier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
 .spec-sheet{background:#fff;color:#111;border-radius:11px;padding:2rem;font-family:'DM Sans',sans-serif;font-size:.85rem}
 .spec-sheet h2{text-align:center;margin-bottom:1rem;font-size:1.2rem}
 .spec-sheet table{width:100%;border-collapse:collapse;margin:.8rem 0}
@@ -86,6 +84,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .spec-sheet .section-title{background:var(--acc);color:#fff;font-weight:700;text-align:center}
 .spec-sheet input{border:none;border-bottom:1px dashed #999;width:100%;font-family:'DM Sans',sans-serif;font-size:.8rem;padding:.2rem;background:transparent}
 .spec-sheet input:focus{outline:none;border-bottom-color:var(--acc)}
+.props-preview{background:var(--inp);border:1px solid var(--brd);border-radius:9px;padding:.8rem;margin-top:.8rem;font-size:.82rem}
+.props-preview table{width:100%;font-size:.78rem}.props-preview td{padding:.2rem .5rem;color:var(--t2)}
+.props-preview td:first-child{color:var(--t3);width:50%}
+.props-preview td:last-child{color:var(--accL);font-family:'Space Mono',monospace}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--brd);border-radius:3px}
 @media print{
   .header,.nav-tabs,.btn-group,.no-print{display:none!important}
   .panel{display:block!important}
@@ -118,82 +121,101 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <!-- ==================== ONGLET 1 : SAISIE ==================== -->
 <div class="panel active" id="p-saisie">
+
+<!-- MODE DE CALCUL -->
+<div class="card">
+  <div class="card-title">🎯 Mode de calcul</div>
+  <div class="mode-switch">
+    <button class="mode-btn active" id="modeTarget" onclick="setMode('target')">Température cible du process</button>
+    <button class="mode-btn" id="modeQ" onclick="setMode('duty')">Puissance thermique Q imposée</button>
+  </div>
+  <div class="fg">
+    <div><label>Opération</label><select id="operation">
+      <option value="cooling">Refroidissement (process chaud → utilité froide)</option>
+      <option value="heating">Chauffage (process froid → utilité chaude)</option>
+    </select></div>
+    <div id="divTarget"><label>Température cible process</label><input type="number" id="procTout" step="any" placeholder="°C"><span class="unit">°C</span></div>
+    <div id="divDuty" style="display:none"><label>Puissance thermique Q</label><input type="number" id="imposedQ" step="any" placeholder="kW"><span class="unit">kW</span></div>
+  </div>
+</div>
+
 <div class="two">
 
-<!-- CÔTÉ CHAUD -->
+<!-- FLUIDE PROCESS -->
 <div class="card">
-  <div class="card-title">🔴 Côté Chaud (Hot Side)</div>
+  <div class="card-title">⚙️ Fluide Process</div>
   <div class="fg">
-    <div><label>Fluide</label><select id="hFluid" onchange="onFluidChange('h')">
+    <div><label>Fluide</label><select id="procFluid" onchange="onFluidChange('proc')">
       <option value="">— Sélectionner —</option>
       <option value="custom">✏️ Saisie manuelle</option>
     </select></div>
-    <div><label>Débit massique</label><input type="number" id="hFlow" step="any" placeholder="0"><span class="unit">kg/h</span></div>
-    <div><label>Température entrée</label><input type="number" id="hTin" step="any" placeholder="0"><span class="unit">°C</span></div>
-    <div><label>Température sortie</label><input type="number" id="hTout" step="any" placeholder="0"><span class="unit">°C</span></div>
-    <div><label>Pression service</label><input type="number" id="hP" step="any" value="3"><span class="unit">bar abs</span></div>
-    <div><label>État</label><select id="hState" onchange="onStateChange('h')">
+    <div><label>Débit massique</label><input type="number" id="procFlow" step="any" placeholder="0"><span class="unit">kg/h</span></div>
+    <div><label>Température entrée</label><input type="number" id="procTin" step="any" placeholder="°C"><span class="unit">°C</span></div>
+    <div><label>Pression service</label><input type="number" id="procP" step="any" value="3"><span class="unit">bar abs</span></div>
+    <div><label>État</label><select id="procState" onchange="onStateChange('proc')">
       <option value="liquid">Liquide</option>
       <option value="gas">Gaz</option>
       <option value="condensation">Condensation</option>
       <option value="evaporation">Évaporation</option>
     </select></div>
   </div>
-  <div class="phase-fields fg" id="hPhase" style="margin-top:1rem">
-    <div><label>Titre vapeur entrée</label><input type="number" id="hXin" step="0.01" value="1" min="0" max="1"><span class="unit">0-1</span></div>
-    <div><label>Titre vapeur sortie</label><input type="number" id="hXout" step="0.01" value="0" min="0" max="1"><span class="unit">0-1</span></div>
-    <div><label>Chaleur latente</label><input type="number" id="hLat" step="any" placeholder="auto"><span class="unit">kJ/kg</span></div>
+  <div class="phase-fields fg" id="procPhase" style="margin-top:.8rem">
+    <div><label>Titre vapeur entrée</label><input type="number" id="procXin" step="0.01" value="1" min="0" max="1"><span class="unit">0-1</span></div>
+    <div><label>Titre vapeur sortie</label><input type="number" id="procXout" step="0.01" value="0" min="0" max="1"><span class="unit">0-1</span></div>
+    <div><label>Chaleur latente</label><input type="number" id="procLat" step="any" placeholder="auto"><span class="unit">kJ/kg</span></div>
   </div>
-  <!-- Propriétés manuelles -->
-  <div class="fg" id="hManual" style="display:none;margin-top:1rem">
-    <div><label>Masse volumique ρ</label><input type="number" id="hRho" step="any"><span class="unit">kg/m³</span></div>
-    <div><label>Viscosité μ</label><input type="number" id="hMu" step="any"><span class="unit">mPa·s</span></div>
-    <div><label>Cp</label><input type="number" id="hCp" step="any"><span class="unit">kJ/(kg·K)</span></div>
-    <div><label>Conductivité λ</label><input type="number" id="hLambda" step="any"><span class="unit">W/(m·K)</span></div>
+  <div class="fg" id="procManual" style="display:none;margin-top:.8rem">
+    <div><label>ρ (masse vol.)</label><input type="number" id="procRho" step="any"><span class="unit">kg/m³</span></div>
+    <div><label>μ (viscosité)</label><input type="number" id="procMu" step="any"><span class="unit">mPa·s</span></div>
+    <div><label>Cp</label><input type="number" id="procCp" step="any"><span class="unit">kJ/(kg·K)</span></div>
+    <div><label>λ (conductivité)</label><input type="number" id="procLambda" step="any"><span class="unit">W/(m·K)</span></div>
   </div>
+  <div class="props-preview" id="procProps"></div>
 </div>
 
-<!-- CÔTÉ FROID -->
+<!-- FLUIDE UTILITÉ -->
 <div class="card">
-  <div class="card-title">🔵 Côté Froid (Cold Side)</div>
+  <div class="card-title">💧 Fluide Utilité</div>
+  <div class="ib" style="margin-bottom:1rem;margin-top:0">Le débit et la température de sortie de l'utilité seront <strong>calculés automatiquement</strong>.</div>
   <div class="fg">
-    <div><label>Fluide</label><select id="cFluid" onchange="onFluidChange('c')">
+    <div><label>Fluide utilité</label><select id="utilFluid" onchange="onFluidChange('util')">
       <option value="">— Sélectionner —</option>
       <option value="custom">✏️ Saisie manuelle</option>
     </select></div>
-    <div><label>Débit massique</label><input type="number" id="cFlow" step="any" placeholder="0"><span class="unit">kg/h</span></div>
-    <div><label>Température entrée</label><input type="number" id="cTin" step="any" placeholder="0"><span class="unit">°C</span></div>
-    <div><label>Température sortie</label><input type="number" id="cTout" step="any" placeholder="0"><span class="unit">°C</span></div>
-    <div><label>Pression service</label><input type="number" id="cP" step="any" value="3"><span class="unit">bar abs</span></div>
-    <div><label>État</label><select id="cState" onchange="onStateChange('c')">
+    <div><label>Température entrée</label><input type="number" id="utilTin" step="any" placeholder="°C"><span class="unit">°C</span></div>
+    <div><label>Pression service</label><input type="number" id="utilP" step="any" value="3"><span class="unit">bar abs</span></div>
+    <div><label>État</label><select id="utilState" onchange="onStateChange('util')">
       <option value="liquid">Liquide</option>
       <option value="gas">Gaz</option>
-      <option value="condensation">Condensation</option>
+      <option value="condensation">Condensation (vapeur → liquide)</option>
       <option value="evaporation">Évaporation</option>
     </select></div>
+    <div><label>ΔT sortie utilité (approche)</label><input type="number" id="utilApproach" step="any" value="15"><span class="unit">°C (ΔT max admis)</span></div>
   </div>
-  <div class="phase-fields fg" id="cPhase" style="margin-top:1rem">
-    <div><label>Titre vapeur entrée</label><input type="number" id="cXin" step="0.01" value="0" min="0" max="1"><span class="unit">0-1</span></div>
-    <div><label>Titre vapeur sortie</label><input type="number" id="cXout" step="0.01" value="1" min="0" max="1"><span class="unit">0-1</span></div>
-    <div><label>Chaleur latente</label><input type="number" id="cLat" step="any" placeholder="auto"><span class="unit">kJ/kg</span></div>
+  <div class="phase-fields fg" id="utilPhase" style="margin-top:.8rem">
+    <div><label>Titre vapeur entrée</label><input type="number" id="utilXin" step="0.01" value="1" min="0" max="1"><span class="unit">0-1</span></div>
+    <div><label>Titre vapeur sortie</label><input type="number" id="utilXout" step="0.01" value="0" min="0" max="1"><span class="unit">0-1</span></div>
+    <div><label>Chaleur latente</label><input type="number" id="utilLat" step="any" placeholder="auto"><span class="unit">kJ/kg</span></div>
   </div>
-  <div class="fg" id="cManual" style="display:none;margin-top:1rem">
-    <div><label>Masse volumique ρ</label><input type="number" id="cRho" step="any"><span class="unit">kg/m³</span></div>
-    <div><label>Viscosité μ</label><input type="number" id="cMu" step="any"><span class="unit">mPa·s</span></div>
-    <div><label>Cp</label><input type="number" id="cCp" step="any"><span class="unit">kJ/(kg·K)</span></div>
-    <div><label>Conductivité λ</label><input type="number" id="cLambda" step="any"><span class="unit">W/(m·K)</span></div>
+  <div class="fg" id="utilManual" style="display:none;margin-top:.8rem">
+    <div><label>ρ</label><input type="number" id="utilRho" step="any"><span class="unit">kg/m³</span></div>
+    <div><label>μ</label><input type="number" id="utilMu" step="any"><span class="unit">mPa·s</span></div>
+    <div><label>Cp</label><input type="number" id="utilCp" step="any"><span class="unit">kJ/(kg·K)</span></div>
+    <div><label>λ</label><input type="number" id="utilLambda" step="any"><span class="unit">W/(m·K)</span></div>
   </div>
+  <div class="props-preview" id="utilProps"></div>
 </div>
+
 </div>
 
 <!-- PARAMÈTRES DE CONCEPTION -->
 <div class="card">
-  <div class="card-title">⚙️ Paramètres de conception</div>
+  <div class="card-title">🔧 Paramètres de conception</div>
   <div class="fg">
-    <div><label>ΔP max côté chaud</label><input type="number" id="dPh" step="any" value="50"><span class="unit">kPa</span></div>
-    <div><label>ΔP max côté froid</label><input type="number" id="dPc" step="any" value="50"><span class="unit">kPa</span></div>
-    <div><label>Fouling côté chaud</label><input type="number" id="foulH" step="0.00001" value="0.00018"><span class="unit">m²·K/W</span></div>
-    <div><label>Fouling côté froid</label><input type="number" id="foulC" step="0.00001" value="0.00018"><span class="unit">m²·K/W</span></div>
+    <div><label>ΔP max côté process</label><input type="number" id="dPproc" step="any" value="50"><span class="unit">kPa</span></div>
+    <div><label>ΔP max côté utilité</label><input type="number" id="dPutil" step="any" value="50"><span class="unit">kPa</span></div>
+    <div><label>Fouling côté process</label><input type="number" id="foulProc" step="0.00001" value="0.00018"><span class="unit">m²·K/W</span></div>
+    <div><label>Fouling côté utilité</label><input type="number" id="foulUtil" step="0.00001" value="0.00018"><span class="unit">m²·K/W</span></div>
     <div><label>Surdesign</label><input type="number" id="overdesign" step="1" value="15"><span class="unit">%</span></div>
     <div><label>Matériau tubes</label><select id="matTube">
       <option value="cs">Acier carbone</option>
@@ -215,8 +237,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <option value="counter">Contre-courant</option>
       <option value="parallel">Co-courant</option>
       <option value="crossflow">Courants croisés</option>
-      <option value="shell12">Calandre 1-2</option>
-      <option value="shell24">Calandre 2-4</option>
+      <option value="shell12" selected>Calandre 1-2 passes</option>
+      <option value="shell24">Calandre 2-4 passes</option>
     </select></div>
   </div>
 </div>
@@ -224,7 +246,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="btn-group">
   <button class="btn btn-p" onclick="calculate()">⚡ Calculer le dimensionnement</button>
   <button class="btn btn-s" onclick="resetForm()">🔄 Réinitialiser</button>
-  <button class="btn btn-s" onclick="loadExample()">📋 Exemple eau/eau</button>
+  <button class="btn btn-s" onclick="loadExample('cooling')">📋 Exemple refroidissement eau/eau</button>
+  <button class="btn btn-s" onclick="loadExample('heating')">📋 Exemple chauffage vapeur/eau</button>
 </div>
 </div>
 
@@ -232,33 +255,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="panel" id="p-resultats">
 <div id="noResults" class="ib">Lancez un calcul depuis l'onglet Saisie pour voir les résultats.</div>
 <div id="resultsContent" style="display:none">
-
-<div class="card">
-  <div class="card-title">⚡ Bilan Thermique</div>
-  <div class="rg" id="rgThermal"></div>
-</div>
-
-<div class="card">
-  <div class="card-title">🏷️ Type d'échangeur recommandé</div>
-  <div id="hxTypeRecommendation"></div>
-</div>
-
-<div class="card">
-  <div class="card-title">📐 Dimensionnement préliminaire</div>
-  <div class="rg" id="rgSizing"></div>
-</div>
-
-<div class="card">
-  <div class="card-title">💧 Vérification hydraulique</div>
-  <div class="rg" id="rgHydraulic"></div>
-  <div id="hydraulicAlerts"></div>
-</div>
-
-<div class="card">
-  <div class="card-title">🔬 Coefficients de transfert</div>
-  <div class="rg" id="rgCoeff"></div>
-</div>
-
+<div class="card"><div class="card-title">⚡ Bilan Thermique</div><div class="rg" id="rgThermal"></div></div>
+<div class="card"><div class="card-title">💧 Côté Utilité — Résultats calculés</div><div class="rg" id="rgUtility"></div></div>
+<div class="card"><div class="card-title">🏷️ Type d'échangeur recommandé</div><div id="hxTypeRecommendation"></div></div>
+<div class="card"><div class="card-title">📐 Dimensionnement préliminaire</div><div class="rg" id="rgSizing"></div></div>
+<div class="card"><div class="card-title">💧 Vérification hydraulique</div><div class="rg" id="rgHydraulic"></div><div id="hydraulicAlerts"></div></div>
+<div class="card"><div class="card-title">🔬 Coefficients de transfert</div><div class="rg" id="rgCoeff"></div></div>
 </div>
 </div>
 
@@ -267,19 +269,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div id="noGeom" class="ib">Lancez un calcul pour voir la géométrie détaillée.</div>
 <div id="geomContent" style="display:none">
 <div class="two">
-  <div class="card">
-    <div class="card-title">🔧 Paramètres géométriques</div>
-    <div id="geomParams"></div>
-  </div>
-  <div class="card">
-    <div class="card-title">📊 Schéma de l'échangeur</div>
-    <div id="geomSVG"></div>
-  </div>
+  <div class="card"><div class="card-title">🔧 Paramètres géométriques</div><div id="geomParams"></div></div>
+  <div class="card"><div class="card-title">📊 Schéma de l'échangeur</div><div id="geomSVG"></div></div>
 </div>
-<div class="card">
-  <div class="card-title">📋 Types TEMA — Référence</div>
-  <div id="temaRef"></div>
-</div>
+<div class="card"><div class="card-title">📋 Nomenclature TEMA</div><div id="temaRef"></div></div>
 </div>
 </div>
 
@@ -301,10 +294,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <!-- ==================== ONGLET 5 : FOURNISSEURS ==================== -->
 <div class="panel" id="p-fournisseurs">
-<div class="card">
-  <div class="card-title">🏭 Fournisseurs d'échangeurs de chaleur</div>
-  <div class="ib" id="supplierFilter">Filtrage automatique selon le type d'échangeur recommandé. Lancez d'abord un calcul.</div>
-  <div class="supplier-grid" id="supplierGrid"></div>
+<div class="card"><div class="card-title">🏭 Fournisseurs d'échangeurs de chaleur</div>
+<div class="ib" id="supplierFilter">Lancez un calcul pour filtrer par type d'échangeur recommandé.</div>
+<div class="supplier-grid" id="supplierGrid"></div>
 </div>
 </div>
 
@@ -312,9 +304,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="panel" id="p-datasheet">
 <div id="noSpec" class="ib">Lancez un calcul pour générer la fiche de spécification.</div>
 <div id="specContent" style="display:none">
-  <div class="btn-group no-print" style="margin-bottom:1rem">
-    <button class="btn btn-p" onclick="printSpec()">🖨️ Imprimer / Export PDF</button>
-  </div>
+  <div class="btn-group no-print" style="margin-bottom:1rem"><button class="btn btn-p" onclick="printSpec()">🖨️ Imprimer / Export PDF</button></div>
   <div id="specSheet"></div>
 </div>
 </div>
@@ -323,9 +313,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="panel" id="p-rapport">
 <div id="noReport" class="ib">Lancez un calcul pour générer le rapport technique.</div>
 <div id="reportContent" style="display:none">
-  <div class="btn-group no-print" style="margin-bottom:1rem">
-    <button class="btn btn-p" onclick="printReport()">🖨️ Imprimer le rapport</button>
-  </div>
+  <div class="btn-group no-print" style="margin-bottom:1rem"><button class="btn btn-p" onclick="printReport()">🖨️ Imprimer le rapport</button></div>
   <div id="reportSheet"></div>
 </div>
 </div>
@@ -334,83 +322,82 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <script>
 /* ====================================================================
-   HeatXAI — Moteur de calcul d'échangeurs de chaleur
+   HeatXAI v2 — Moteur de calcul d'échangeurs de chaleur
+   Approche ingénieur : entrées = fluides + T entrée + débit process
    ==================================================================== */
 
 // ===================== BASE DE DONNÉES FLUIDES =====================
-const FLUIDS = {
-  "water":       {name:"Eau",               rho:995, mu:0.8, cp:4.18, lam:0.62, pr:5.4, lat:2257, tsat:100, cat:"liquid"},
-  "steam_lp":    {name:"Vapeur BP (3 bar)", rho:1.65, mu:0.012, cp:2.08, lam:0.027, pr:0.96, lat:2164, tsat:133.5, cat:"gas"},
-  "steam_mp":    {name:"Vapeur MP (10 bar)",rho:5.15, mu:0.014, cp:2.21, lam:0.033, pr:0.95, lat:2015, tsat:179.9, cat:"gas"},
-  "steam_hp":    {name:"Vapeur HP (40 bar)",rho:20.1, mu:0.017, cp:2.68, lam:0.047, pr:0.97, lat:1714, tsat:250.4, cat:"gas"},
-  "air":         {name:"Air",               rho:1.18, mu:0.0185, cp:1.006, lam:0.026, pr:0.71, lat:0, cat:"gas"},
-  "nitrogen":    {name:"Azote",             rho:1.15, mu:0.0178, cp:1.04, lam:0.026, pr:0.71, lat:199, tsat:-196, cat:"gas"},
-  "therminol55": {name:"Therminol 55",      rho:868, mu:3.5, cp:1.88, lam:0.12, pr:55, lat:0, cat:"liquid"},
-  "therminol66": {name:"Therminol 66",      rho:998, mu:6.0, cp:1.56, lam:0.118, pr:80, lat:0, cat:"liquid"},
-  "dowtherm_a":  {name:"Dowtherm A",        rho:1056, mu:3.7, cp:1.55, lam:0.14, pr:41, lat:0, cat:"liquid"},
-  "glycol30":    {name:"Glycol EG 30%",     rho:1038, mu:2.5, cp:3.56, lam:0.46, pr:19.4, lat:0, cat:"liquid"},
-  "glycol50":    {name:"Glycol EG 50%",     rho:1070, mu:4.0, cp:3.14, lam:0.38, pr:33, lat:0, cat:"liquid"},
-  "methanol":    {name:"Méthanol",          rho:791, mu:0.55, cp:2.53, lam:0.20, pr:6.9, lat:1100, tsat:64.7, cat:"liquid"},
-  "ethanol":     {name:"Éthanol",           rho:789, mu:1.07, cp:2.44, lam:0.17, pr:15.4, lat:846, tsat:78.4, cat:"liquid"},
-  "acetone":     {name:"Acétone",           rho:784, mu:0.31, cp:2.16, lam:0.16, pr:4.2, lat:539, tsat:56.2, cat:"liquid"},
-  "toluene":     {name:"Toluène",           rho:867, mu:0.56, cp:1.70, lam:0.13, pr:7.3, lat:351, tsat:110.6, cat:"liquid"},
-  "hexane":      {name:"Hexane",            rho:655, mu:0.30, cp:2.27, lam:0.12, pr:5.7, lat:335, tsat:68.7, cat:"liquid"},
-  "heptane":     {name:"Heptane",           rho:684, mu:0.39, cp:2.25, lam:0.12, pr:7.3, lat:318, tsat:98.4, cat:"liquid"},
-  "ammonia":     {name:"Ammoniac",          rho:602, mu:0.13, cp:4.74, lam:0.49, pr:1.3, lat:1370, tsat:-33.3, cat:"liquid"},
-  "r134a":       {name:"R-134a",            rho:1206, mu:0.20, cp:1.43, lam:0.082, pr:3.5, lat:217, tsat:-26.1, cat:"liquid"},
-  "r410a":       {name:"R-410A",            rho:1062, mu:0.15, cp:1.84, lam:0.088, pr:3.1, lat:221, tsat:-51.4, cat:"liquid"},
-  "co2":         {name:"CO₂ (liquide)",     rho:770, mu:0.07, cp:2.16, lam:0.085, pr:1.8, lat:231, tsat:-78.5, cat:"liquid"},
-  "propane":     {name:"Propane",           rho:493, mu:0.10, cp:2.52, lam:0.096, pr:2.6, lat:426, tsat:-42.1, cat:"liquid"},
-  "butane":      {name:"Butane",            rho:573, mu:0.16, cp:2.43, lam:0.11, pr:3.5, lat:386, tsat:-0.5, cat:"liquid"},
-  "fuel_light":  {name:"Fuel léger",        rho:850, mu:3.0, cp:2.05, lam:0.13, pr:47, lat:0, cat:"liquid"},
-  "fuel_heavy":  {name:"Fuel lourd",        rho:950, mu:50, cp:1.88, lam:0.12, pr:785, lat:0, cat:"liquid"},
-  "crude_oil":   {name:"Pétrole brut",      rho:870, mu:8.0, cp:2.05, lam:0.13, pr:126, lat:0, cat:"liquid"},
-  "kerosene":    {name:"Kérosène",          rho:810, mu:1.6, cp:2.01, lam:0.145, pr:22, lat:0, cat:"liquid"},
-  "naphtha":     {name:"Naphta",            rho:730, mu:0.5, cp:2.14, lam:0.13, pr:8.2, lat:0, cat:"liquid"},
-  "h2so4_98":    {name:"H₂SO₄ 98%",        rho:1830, mu:25, cp:1.38, lam:0.36, pr:96, lat:0, cat:"liquid"},
-  "h2so4_70":    {name:"H₂SO₄ 70%",        rho:1615, mu:8.0, cp:1.63, lam:0.43, pr:30, lat:0, cat:"liquid"},
-  "naoh_50":     {name:"NaOH 50%",          rho:1525, mu:12, cp:2.56, lam:0.55, pr:56, lat:0, cat:"liquid"},
-  "naoh_30":     {name:"NaOH 30%",          rho:1330, mu:4.5, cp:3.01, lam:0.58, pr:23, lat:0, cat:"liquid"},
-  "hcl_30":      {name:"HCl 30%",           rho:1149, mu:1.7, cp:2.73, lam:0.45, pr:10.3, lat:0, cat:"liquid"},
-  "brine":       {name:"Saumure NaCl 20%",  rho:1148, mu:1.6, cp:3.33, lam:0.54, pr:9.9, lat:0, cat:"liquid"},
-  "seawater":    {name:"Eau de mer",        rho:1025, mu:1.08, cp:3.99, lam:0.6, pr:7.2, lat:0, cat:"liquid"},
-  "mineral_oil": {name:"Huile minérale",    rho:870, mu:20, cp:1.88, lam:0.13, pr:290, lat:0, cat:"liquid"},
-  "olive_oil":   {name:"Huile végétale",    rho:910, mu:65, cp:1.97, lam:0.17, pr:753, lat:0, cat:"liquid"},
-  "milk":        {name:"Lait",              rho:1030, mu:2.0, cp:3.93, lam:0.55, pr:14.3, lat:0, cat:"liquid"},
-  "juice":       {name:"Jus de fruit",      rho:1050, mu:1.5, cp:3.85, lam:0.55, pr:10.5, lat:0, cat:"liquid"},
-  "beer":        {name:"Bière",             rho:1010, mu:1.4, cp:4.05, lam:0.58, pr:9.8, lat:0, cat:"liquid"},
+const FLUIDS={
+  "water":{name:"Eau",rho:995,mu:0.8,cp:4.18,lam:0.62,pr:5.4,lat:2257,tsat:100,cat:"liquid"},
+  "steam_lp":{name:"Vapeur BP (3 bar)",rho:1.65,mu:0.012,cp:2.08,lam:0.027,pr:0.96,lat:2164,tsat:133.5,cat:"gas"},
+  "steam_mp":{name:"Vapeur MP (10 bar)",rho:5.15,mu:0.014,cp:2.21,lam:0.033,pr:0.95,lat:2015,tsat:179.9,cat:"gas"},
+  "steam_hp":{name:"Vapeur HP (40 bar)",rho:20.1,mu:0.017,cp:2.68,lam:0.047,pr:0.97,lat:1714,tsat:250.4,cat:"gas"},
+  "cw":{name:"Eau de refroidissement (CW)",rho:998,mu:0.9,cp:4.18,lam:0.61,pr:6.2,lat:0,cat:"liquid"},
+  "chw":{name:"Eau glacée (7°C)",rho:1000,mu:1.3,cp:4.19,lam:0.57,pr:9.5,lat:0,cat:"liquid"},
+  "air":{name:"Air",rho:1.18,mu:0.0185,cp:1.006,lam:0.026,pr:0.71,lat:0,cat:"gas"},
+  "nitrogen":{name:"Azote",rho:1.15,mu:0.0178,cp:1.04,lam:0.026,pr:0.71,lat:199,tsat:-196,cat:"gas"},
+  "therminol55":{name:"Therminol 55",rho:868,mu:3.5,cp:1.88,lam:0.12,pr:55,lat:0,cat:"liquid"},
+  "therminol66":{name:"Therminol 66",rho:998,mu:6.0,cp:1.56,lam:0.118,pr:80,lat:0,cat:"liquid"},
+  "dowtherm_a":{name:"Dowtherm A",rho:1056,mu:3.7,cp:1.55,lam:0.14,pr:41,lat:0,cat:"liquid"},
+  "glycol30":{name:"Glycol EG 30%",rho:1038,mu:2.5,cp:3.56,lam:0.46,pr:19.4,lat:0,cat:"liquid"},
+  "glycol50":{name:"Glycol EG 50%",rho:1070,mu:4.0,cp:3.14,lam:0.38,pr:33,lat:0,cat:"liquid"},
+  "methanol":{name:"Méthanol",rho:791,mu:0.55,cp:2.53,lam:0.20,pr:6.9,lat:1100,tsat:64.7,cat:"liquid"},
+  "ethanol":{name:"Éthanol",rho:789,mu:1.07,cp:2.44,lam:0.17,pr:15.4,lat:846,tsat:78.4,cat:"liquid"},
+  "acetone":{name:"Acétone",rho:784,mu:0.31,cp:2.16,lam:0.16,pr:4.2,lat:539,tsat:56.2,cat:"liquid"},
+  "toluene":{name:"Toluène",rho:867,mu:0.56,cp:1.70,lam:0.13,pr:7.3,lat:351,tsat:110.6,cat:"liquid"},
+  "hexane":{name:"Hexane",rho:655,mu:0.30,cp:2.27,lam:0.12,pr:5.7,lat:335,tsat:68.7,cat:"liquid"},
+  "heptane":{name:"Heptane",rho:684,mu:0.39,cp:2.25,lam:0.12,pr:7.3,lat:318,tsat:98.4,cat:"liquid"},
+  "ammonia":{name:"Ammoniac",rho:602,mu:0.13,cp:4.74,lam:0.49,pr:1.3,lat:1370,tsat:-33.3,cat:"liquid"},
+  "r134a":{name:"R-134a",rho:1206,mu:0.20,cp:1.43,lam:0.082,pr:3.5,lat:217,tsat:-26.1,cat:"liquid"},
+  "r410a":{name:"R-410A",rho:1062,mu:0.15,cp:1.84,lam:0.088,pr:3.1,lat:221,tsat:-51.4,cat:"liquid"},
+  "propane":{name:"Propane",rho:493,mu:0.10,cp:2.52,lam:0.096,pr:2.6,lat:426,tsat:-42.1,cat:"liquid"},
+  "fuel_light":{name:"Fuel léger",rho:850,mu:3.0,cp:2.05,lam:0.13,pr:47,lat:0,cat:"liquid"},
+  "fuel_heavy":{name:"Fuel lourd",rho:950,mu:50,cp:1.88,lam:0.12,pr:785,lat:0,cat:"liquid"},
+  "crude_oil":{name:"Pétrole brut",rho:870,mu:8.0,cp:2.05,lam:0.13,pr:126,lat:0,cat:"liquid"},
+  "kerosene":{name:"Kérosène",rho:810,mu:1.6,cp:2.01,lam:0.145,pr:22,lat:0,cat:"liquid"},
+  "naphtha":{name:"Naphta",rho:730,mu:0.5,cp:2.14,lam:0.13,pr:8.2,lat:0,cat:"liquid"},
+  "h2so4_98":{name:"H₂SO₄ 98%",rho:1830,mu:25,cp:1.38,lam:0.36,pr:96,lat:0,cat:"liquid"},
+  "h2so4_70":{name:"H₂SO₄ 70%",rho:1615,mu:8.0,cp:1.63,lam:0.43,pr:30,lat:0,cat:"liquid"},
+  "naoh_50":{name:"NaOH 50%",rho:1525,mu:12,cp:2.56,lam:0.55,pr:56,lat:0,cat:"liquid"},
+  "naoh_30":{name:"NaOH 30%",rho:1330,mu:4.5,cp:3.01,lam:0.58,pr:23,lat:0,cat:"liquid"},
+  "hcl_30":{name:"HCl 30%",rho:1149,mu:1.7,cp:2.73,lam:0.45,pr:10.3,lat:0,cat:"liquid"},
+  "brine":{name:"Saumure NaCl 20%",rho:1148,mu:1.6,cp:3.33,lam:0.54,pr:9.9,lat:0,cat:"liquid"},
+  "seawater":{name:"Eau de mer",rho:1025,mu:1.08,cp:3.99,lam:0.6,pr:7.2,lat:0,cat:"liquid"},
+  "mineral_oil":{name:"Huile minérale",rho:870,mu:20,cp:1.88,lam:0.13,pr:290,lat:0,cat:"liquid"},
+  "olive_oil":{name:"Huile végétale",rho:910,mu:65,cp:1.97,lam:0.17,pr:753,lat:0,cat:"liquid"},
+  "milk":{name:"Lait",rho:1030,mu:2.0,cp:3.93,lam:0.55,pr:14.3,lat:0,cat:"liquid"},
+  "juice":{name:"Jus de fruit",rho:1050,mu:1.5,cp:3.85,lam:0.55,pr:10.5,lat:0,cat:"liquid"},
+  "beer":{name:"Bière",rho:1010,mu:1.4,cp:4.05,lam:0.58,pr:9.8,lat:0,cat:"liquid"},
 };
 
-// ===================== CONDUCTIVITÉ DES MATÉRIAUX =====================
-const MAT_COND = {cs:50, ss304:16.3, ss316:16.3, ti:21.9, cu:386, cuni:29, hast:11.1};
-const MAT_NAMES = {cs:"Acier carbone",ss304:"Inox 304",ss316:"Inox 316L",ti:"Titane",cu:"Cuivre",cuni:"Cupro-nickel 90/10",hast:"Hastelloy C-276"};
+const MAT_COND={cs:50,ss304:16.3,ss316:16.3,ti:21.9,cu:386,cuni:29,hast:11.1};
+const MAT_NAMES={cs:"Acier carbone",ss304:"Inox 304",ss316:"Inox 316L",ti:"Titane",cu:"Cuivre",cuni:"Cupro-nickel 90/10",hast:"Hastelloy C-276"};
 
-// ===================== COEFFICIENTS U TYPIQUES =====================
-const U_TABLE = {
-  "liquid-liquid":   {low:300, mid:800, high:1500, typical:800},
-  "liquid-gas":      {low:15, mid:60, high:150, typical:60},
-  "gas-gas":         {low:5, mid:25, high:50, typical:25},
-  "steam-liquid":    {low:500, mid:2000, high:4000, typical:2000},
-  "steam-gas":       {low:15, mid:60, high:200, typical:60},
-  "condensation-liquid":{low:500, mid:1500, high:4000, typical:1500},
-  "condensation-gas":{low:15, mid:50, high:150, typical:50},
-  "liquid-evaporation":{low:300, mid:1000, high:3000, typical:1000},
-  "steam-evaporation":{low:500, mid:1500, high:3000, typical:1500},
+const U_TABLE={
+  "liquid-liquid":{low:300,mid:800,high:1500,typical:800},
+  "liquid-gas":{low:15,mid:60,high:150,typical:60},
+  "gas-gas":{low:5,mid:25,high:50,typical:25},
+  "condensation-liquid":{low:500,mid:1500,high:4000,typical:1500},
+  "condensation-gas":{low:15,mid:50,high:150,typical:50},
+  "liquid-evaporation":{low:300,mid:1000,high:3000,typical:1000},
+  "condensation-evaporation":{low:500,mid:1500,high:3000,typical:1500},
 };
 
-// ===================== FOULING FACTORS TEMA =====================
-const FOULING_DEFAULTS = {
-  "water":0.00018,"steam_lp":0.00009,"steam_mp":0.00009,"steam_hp":0.00009,
-  "air":0.00035,"nitrogen":0.00018,"therminol55":0.00018,"therminol66":0.00018,
-  "dowtherm_a":0.00018,"glycol30":0.00035,"glycol50":0.00035,
-  "methanol":0.00018,"ethanol":0.00018,"acetone":0.00009,"toluene":0.00018,
-  "fuel_light":0.00035,"fuel_heavy":0.00088,"crude_oil":0.00053,
-  "h2so4_98":0.00035,"naoh_50":0.00035,"seawater":0.00035,
-  "mineral_oil":0.00053,"olive_oil":0.00053,"milk":0.00035,
+const FOULING_DEF={
+  "water":0.00018,"cw":0.00018,"chw":0.00009,"steam_lp":0.00009,"steam_mp":0.00009,"steam_hp":0.00009,
+  "air":0.00035,"nitrogen":0.00018,"therminol55":0.00018,"therminol66":0.00018,"dowtherm_a":0.00018,
+  "glycol30":0.00035,"glycol50":0.00035,"methanol":0.00018,"ethanol":0.00018,"acetone":0.00009,
+  "fuel_light":0.00035,"fuel_heavy":0.00088,"crude_oil":0.00053,"h2so4_98":0.00035,"naoh_50":0.00035,
+  "seawater":0.00035,"mineral_oil":0.00053,"olive_oil":0.00053,"milk":0.00035,
 };
 
-// ===================== FOURNISSEURS =====================
-const SUPPLIERS = [
+// Approche ΔT typique pour les utilités
+const UTIL_APPROACH={
+  "cw":15,"chw":5,"water":15,"steam_lp":0,"steam_mp":0,"steam_hp":0,
+  "air":30,"therminol55":20,"therminol66":20,"dowtherm_a":20,"glycol30":10,"glycol50":10
+};
+
+const SUPPLIERS=[
   {name:"Alfa Laval",country:"Suède",types:["phe","spiral","st","welded"],spec:"Leader mondial plaques & spirales",url:"https://www.alfalaval.com",logo:"🇸🇪"},
   {name:"Kelvion",country:"Allemagne",types:["phe","st","ac","finned"],spec:"Tous types, expertise industrielle",url:"https://www.kelvion.com",logo:"🇩🇪"},
   {name:"SWEP",country:"Suède",types:["bphe"],spec:"Plaques brasées (HVAC-R, process)",url:"https://www.swep.net",logo:"🇸🇪"},
@@ -422,884 +409,695 @@ const SUPPLIERS = [
   {name:"Barriquand",country:"France",types:["welded","phe","st","bphe"],spec:"Platular® (plaques soudées), tous types",url:"https://www.barriquand.com",logo:"🇫🇷"},
   {name:"Onda",country:"Italie",types:["bphe","st","ac"],spec:"Plaques brasées, aéroréfrigérants",url:"https://www.onda-it.com",logo:"🇮🇹"},
   {name:"Mersen",country:"France",types:["graphite","corrosion"],spec:"Graphite, milieux très corrosifs",url:"https://www.mersen.com",logo:"🇫🇷"},
-  {name:"Labbe Process Equipment",country:"France",types:["st","custom"],spec:"Inox sur mesure, équipements procédés",url:"https://www.labbe.fr",logo:"🇫🇷"},
+  {name:"Labbe",country:"France",types:["st","custom"],spec:"Inox sur mesure, équipements procédés",url:"https://www.labbe.fr",logo:"🇫🇷"},
   {name:"Vahterus",country:"Finlande",types:["pshe"],spec:"Plate & shell (haute pression/temp)",url:"https://www.vahterus.com",logo:"🇫🇮"},
   {name:"Hisaka Works",country:"Japon",types:["phe","bphe"],spec:"Plaques, innovation japonaise",url:"https://www.hisaka.co.jp/english",logo:"🇯🇵"},
   {name:"Thermofin",country:"Canada",types:["ac","finned"],spec:"Aéroréfrigérants, tubes ailetés",url:"https://www.thermofin.com",logo:"🇨🇦"},
 ];
 
-// ===================== RÉSULTATS GLOBAUX =====================
-let R = {}; // résultats du dernier calcul
-let charts = {}; // instances Chart.js
+let R={};
+let charts={};
+let calcMode='target'; // 'target' ou 'duty'
 
 // ===================== NAVIGATION =====================
-function sp(id) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+function sp(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('p-'+id).classList.add('active');
-  const tabs = document.querySelectorAll('.nav-tab');
-  const names = ['saisie','resultats','geometrie','courbes','fournisseurs','datasheet','rapport'];
-  const idx = names.indexOf(id);
-  if (idx >= 0) tabs[idx].classList.add('active');
+  const names=['saisie','resultats','geometrie','courbes','fournisseurs','datasheet','rapport'];
+  const idx=names.indexOf(id);
+  if(idx>=0)document.querySelectorAll('.nav-tab')[idx].classList.add('active');
 }
 
-// ===================== INIT : POPULATE FLUID SELECTS =====================
-function initFluids() {
-  ['hFluid','cFluid'].forEach(selId => {
-    const sel = document.getElementById(selId);
-    Object.keys(FLUIDS).forEach(k => {
-      const o = document.createElement('option');
-      o.value = k; o.textContent = FLUIDS[k].name;
-      sel.appendChild(o);
+// ===================== MODE =====================
+function setMode(m){
+  calcMode=m;
+  document.getElementById('modeTarget').classList.toggle('active',m==='target');
+  document.getElementById('modeQ').classList.toggle('active',m==='duty');
+  document.getElementById('divTarget').style.display=m==='target'?'':'none';
+  document.getElementById('divDuty').style.display=m==='duty'?'':'none';
+}
+
+// ===================== FLUIDES =====================
+function initFluids(){
+  ['procFluid','utilFluid'].forEach(selId=>{
+    const sel=document.getElementById(selId);
+    const groups={
+      'Utilités':['water','cw','chw','steam_lp','steam_mp','steam_hp','air'],
+      'Fluides caloporteurs':['therminol55','therminol66','dowtherm_a','glycol30','glycol50'],
+      'Solvants & organiques':['methanol','ethanol','acetone','toluene','hexane','heptane'],
+      'Réfrigérants':['ammonia','r134a','r410a','propane'],
+      'Hydrocarbures':['fuel_light','fuel_heavy','crude_oil','kerosene','naphtha'],
+      'Acides & bases':['h2so4_98','h2so4_70','naoh_50','naoh_30','hcl_30'],
+      'Autres':['brine','seawater','nitrogen','mineral_oil','olive_oil','milk','juice','beer'],
+    };
+    Object.entries(groups).forEach(([gName,keys])=>{
+      const og=document.createElement('optgroup');
+      og.label=gName;
+      keys.forEach(k=>{
+        if(!FLUIDS[k])return;
+        const o=document.createElement('option');
+        o.value=k;o.textContent=FLUIDS[k].name;
+        og.appendChild(o);
+      });
+      sel.appendChild(og);
     });
   });
 }
 
-function onFluidChange(side) {
-  const v = document.getElementById(side+'Fluid').value;
-  document.getElementById(side+'Manual').style.display = (v==='custom') ? 'grid' : 'none';
-  if (v && v !== 'custom' && FOULING_DEFAULTS[v]) {
-    document.getElementById(side==='h'?'foulH':'foulC').value = FOULING_DEFAULTS[v];
+function onFluidChange(side){
+  const v=document.getElementById(side+'Fluid').value;
+  document.getElementById(side+'Manual').style.display=(v==='custom')?'grid':'none';
+  if(v&&v!=='custom'){
+    const foul=side==='proc'?'foulProc':'foulUtil';
+    if(FOULING_DEF[v])document.getElementById(foul).value=FOULING_DEF[v];
+    if(side==='util'&&UTIL_APPROACH[v]!==undefined){
+      document.getElementById('utilApproach').value=UTIL_APPROACH[v];
+    }
+    // auto-set state for steam
+    if(v.startsWith('steam_')){
+      document.getElementById(side+'State').value='condensation';
+      onStateChange(side);
+    }
   }
+  showFluidProps(side);
 }
 
-function onStateChange(side) {
-  const st = document.getElementById(side+'State').value;
-  const show = (st==='condensation' || st==='evaporation');
-  document.getElementById(side+'Phase').classList.toggle('show', show);
+function onStateChange(side){
+  const st=document.getElementById(side+'State').value;
+  const show=(st==='condensation'||st==='evaporation');
+  document.getElementById(side+'Phase').classList.toggle('show',show);
+}
+
+function showFluidProps(side){
+  const f=getFluidProps(side);
+  const el=document.getElementById(side+'Props');
+  if(!f||!f.name){el.innerHTML='';return;}
+  el.innerHTML=`<table>
+    <tr><td>Masse volumique ρ</td><td>${f.rho} kg/m³</td></tr>
+    <tr><td>Viscosité μ</td><td>${f.mu} mPa·s</td></tr>
+    <tr><td>Capacité calorifique Cp</td><td>${f.cp} kJ/(kg·K)</td></tr>
+    <tr><td>Conductivité λ</td><td>${f.lam} W/(m·K)</td></tr>
+    <tr><td>Prandtl Pr</td><td>${f.pr.toFixed(1)}</td></tr>
+    ${f.lat>0?'<tr><td>Chaleur latente</td><td>'+f.lat+' kJ/kg</td></tr>':''}
+    ${f.tsat?'<tr><td>T saturation</td><td>'+f.tsat+' °C</td></tr>':''}
+  </table>`;
 }
 
 // ===================== UTILITAIRES =====================
-function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
-function fmt(n, d=1) { return isNaN(n) ? '—' : n.toFixed(d); }
-function fmtE(n, d=2) { return isNaN(n) ? '—' : n.toExponential(d); }
+function val(id){return parseFloat(document.getElementById(id).value)||0;}
+function fmt(n,d=1){return isNaN(n)?'—':n.toFixed(d);}
+function fmtE(n,d=2){return isNaN(n)?'—':n.toExponential(d);}
 
-function getFluidProps(side) {
-  const fid = document.getElementById(side+'Fluid').value;
-  if (fid === 'custom') {
-    return {
-      name: 'Manuel',
-      rho: v(side+'Rho'), mu: v(side+'Mu'), cp: v(side+'Cp'), lam: v(side+'Lambda'),
-      pr: (v(side+'Mu')*1e-3 * v(side+'Cp')*1e3) / (v(side+'Lambda')||1),
-      lat: v(side+'Lat'), cat: 'liquid'
-    };
+function getFluidProps(side){
+  const fid=document.getElementById(side+'Fluid').value;
+  if(fid==='custom'){
+    const rho=val(side+'Rho'),mu=val(side+'Mu'),cp=val(side+'Cp'),lam=val(side+'Lambda');
+    return{name:'Manuel',rho,mu,cp,lam,pr:(mu*1e-3*cp*1e3)/(lam||1),lat:val(side+'Lat'),cat:'liquid'};
   }
-  if (!fid || !FLUIDS[fid]) return null;
-  const f = {...FLUIDS[fid]};
-  const latInput = v(side+'Lat');
-  if (latInput > 0) f.lat = latInput;
+  if(!fid||!FLUIDS[fid])return null;
+  const f={...FLUIDS[fid]};
+  const latInput=val(side+'Lat');
+  if(latInput>0)f.lat=latInput;
   return f;
 }
 
 // ===================== EXEMPLES =====================
-function loadExample() {
-  document.getElementById('hFluid').value = 'water'; onFluidChange('h');
-  document.getElementById('hFlow').value = 10000;
-  document.getElementById('hTin').value = 90;
-  document.getElementById('hTout').value = 60;
-  document.getElementById('hP').value = 3;
-  document.getElementById('hState').value = 'liquid'; onStateChange('h');
-  document.getElementById('cFluid').value = 'water'; onFluidChange('c');
-  document.getElementById('cFlow').value = 15000;
-  document.getElementById('cTin').value = 20;
-  document.getElementById('cTout').value = 40;
-  document.getElementById('cP').value = 3;
-  document.getElementById('cState').value = 'liquid'; onStateChange('c');
-  document.getElementById('flowConfig').value = 'counter';
+function loadExample(type){
+  if(type==='cooling'){
+    setMode('target');
+    document.getElementById('operation').value='cooling';
+    document.getElementById('procFluid').value='water';onFluidChange('proc');
+    document.getElementById('procFlow').value=10000;
+    document.getElementById('procTin').value=90;
+    document.getElementById('procTout').value=40;
+    document.getElementById('procP').value=3;
+    document.getElementById('procState').value='liquid';onStateChange('proc');
+    document.getElementById('utilFluid').value='cw';onFluidChange('util');
+    document.getElementById('utilTin').value=25;
+    document.getElementById('utilP').value=3;
+    document.getElementById('utilState').value='liquid';onStateChange('util');
+    document.getElementById('utilApproach').value=15;
+  } else {
+    setMode('target');
+    document.getElementById('operation').value='heating';
+    document.getElementById('procFluid').value='water';onFluidChange('proc');
+    document.getElementById('procFlow').value=5000;
+    document.getElementById('procTin').value=20;
+    document.getElementById('procTout').value=80;
+    document.getElementById('procP').value=3;
+    document.getElementById('procState').value='liquid';onStateChange('proc');
+    document.getElementById('utilFluid').value='steam_lp';onFluidChange('util');
+    document.getElementById('utilTin').value=133.5;
+    document.getElementById('utilP').value=3;
+    document.getElementById('utilState').value='condensation';onStateChange('util');
+    document.getElementById('utilApproach').value=0;
+  }
 }
 
-function resetForm() {
-  ['hFluid','cFluid'].forEach(id => document.getElementById(id).value = '');
-  ['hFlow','hTin','hTout','cFlow','cTin','cTout'].forEach(id => document.getElementById(id).value = '');
-  ['hManual','cManual'].forEach(id => document.getElementById(id).style.display = 'none');
-  ['hPhase','cPhase'].forEach(id => document.getElementById(id).classList.remove('show'));
-  document.getElementById('hState').value = 'liquid';
-  document.getElementById('cState').value = 'liquid';
+function resetForm(){
+  ['procFluid','utilFluid'].forEach(id=>document.getElementById(id).value='');
+  ['procFlow','procTin','procTout','imposedQ','utilTin'].forEach(id=>document.getElementById(id).value='');
+  ['procManual','utilManual'].forEach(id=>document.getElementById(id).style.display='none');
+  ['procPhase','utilPhase'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  ['procProps','utilProps'].forEach(id=>document.getElementById(id).innerHTML='');
+  setMode('target');
 }
 
-// ===================== MOTEUR DE CALCUL PRINCIPAL =====================
-function calculate() {
-  const ld = document.getElementById('ld');
+// ===================== MOTEUR DE CALCUL =====================
+function calculate(){
+  const ld=document.getElementById('ld');
   ld.classList.add('show');
-  document.getElementById('ldT').textContent = 'Calculs en cours...';
-
-  setTimeout(() => {
-    try {
-      doCalculation();
-      ld.classList.remove('show');
-      sp('resultats');
-    } catch(e) {
-      ld.classList.remove('show');
-      alert('Erreur de calcul : ' + e.message);
-      console.error(e);
-    }
-  }, 100);
+  document.getElementById('ldT').textContent='Calculs en cours...';
+  setTimeout(()=>{
+    try{doCalculation();ld.classList.remove('show');sp('resultats');}
+    catch(e){ld.classList.remove('show');alert('Erreur : '+e.message);console.error(e);}
+  },100);
 }
 
-function doCalculation() {
-  const hf = getFluidProps('h');
-  const cf = getFluidProps('c');
-  if (!hf || !cf) throw new Error('Sélectionnez les fluides côté chaud et froid.');
+function doCalculation(){
+  const pf=getFluidProps('proc');
+  const uf=getFluidProps('util');
+  if(!pf)throw new Error('Sélectionnez le fluide process.');
+  if(!uf)throw new Error('Sélectionnez le fluide utilité.');
 
-  const hFlow = v('hFlow');     // kg/h
-  const hTin = v('hTin');
-  const hTout = v('hTout');
-  const cFlow = v('cFlow');
-  const cTin = v('cTin');
-  const cTout = v('cTout');
-  const hState = document.getElementById('hState').value;
-  const cState = document.getElementById('cState').value;
-  const config = document.getElementById('flowConfig').value;
-  const overdesign = v('overdesign') / 100;
-  const foulH = v('foulH');
-  const foulC = v('foulC');
-  const matTube = document.getElementById('matTube').value;
-  const matShell = document.getElementById('matShell').value;
+  const op=document.getElementById('operation').value; // 'cooling' ou 'heating'
+  const procFlow=val('procFlow'); // kg/h
+  const procTin=val('procTin');
+  const procState=document.getElementById('procState').value;
+  const utilTin=val('utilTin');
+  const utilState=document.getElementById('utilState').value;
+  const approach=val('utilApproach');
+  const config=document.getElementById('flowConfig').value;
+  const overdesign=val('overdesign')/100;
+  const foulProc=val('foulProc');
+  const foulUtil=val('foulUtil');
+  const matTube=document.getElementById('matTube').value;
+  const matShell=document.getElementById('matShell').value;
 
-  // Validation
-  if (hFlow <= 0 || cFlow <= 0) throw new Error('Les débits doivent être > 0.');
-  if (hTin <= hTout && (hState==='liquid'||hState==='gas')) throw new Error('Côté chaud : T entrée doit être > T sortie.');
-  if (cTout <= cTin && (cState==='liquid'||cState==='gas')) throw new Error('Côté froid : T sortie doit être > T entrée.');
+  if(procFlow<=0)throw new Error('Le débit process doit être > 0.');
 
   // === PUISSANCE THERMIQUE ===
-  let Qh, Qc;
-  if (hState === 'condensation') {
-    const xIn = v('hXin'), xOut = v('hXout');
-    const Qlat = hFlow / 3600 * hf.lat * (xIn - xOut);
-    const Qsens = hFlow / 3600 * hf.cp * (hTin - hTout);
-    Qh = Qlat + Qsens;
-  } else if (hState === 'evaporation') {
-    const xIn = v('hXin'), xOut = v('hXout');
-    const Qlat = hFlow / 3600 * hf.lat * (xOut - xIn);
-    const Qsens = hFlow / 3600 * hf.cp * Math.abs(hTin - hTout);
-    Qh = Qlat + Qsens;
+  let Q, procTout;
+  if(calcMode==='target'){
+    procTout=val('procTout');
+    if(op==='cooling'&&procTout>=procTin)throw new Error('Refroidissement : T cible doit être < T entrée process.');
+    if(op==='heating'&&procTout<=procTin)throw new Error('Chauffage : T cible doit être > T entrée process.');
+
+    if(procState==='condensation'){
+      const xIn=val('procXin'),xOut=val('procXout');
+      Q=procFlow/3600*(pf.lat*(xIn-xOut)+pf.cp*Math.abs(procTin-procTout));
+    } else if(procState==='evaporation'){
+      const xIn=val('procXin'),xOut=val('procXout');
+      Q=procFlow/3600*(pf.lat*(xOut-xIn)+pf.cp*Math.abs(procTout-procTin));
+    } else {
+      Q=procFlow/3600*pf.cp*Math.abs(procTin-procTout);
+    }
   } else {
-    Qh = hFlow / 3600 * hf.cp * Math.abs(hTin - hTout);
+    Q=val('imposedQ');
+    if(Q<=0)throw new Error('La puissance Q doit être > 0.');
+    // Calculer T sortie process
+    if(procState==='condensation'||procState==='evaporation'){
+      procTout=procTin; // simplifié pour changement de phase
+    } else {
+      const dT=Q/(procFlow/3600*pf.cp);
+      procTout=(op==='cooling')?(procTin-dT):(procTin+dT);
+    }
   }
 
-  if (cState === 'evaporation') {
-    const xIn = v('cXin'), xOut = v('cXout');
-    const Qlat = cFlow / 3600 * cf.lat * (xOut - xIn);
-    const Qsens = cFlow / 3600 * cf.cp * Math.abs(cTout - cTin);
-    Qc = Qlat + Qsens;
-  } else if (cState === 'condensation') {
-    const xIn = v('cXin'), xOut = v('cXout');
-    const Qlat = cFlow / 3600 * cf.lat * (xIn - xOut);
-    const Qsens = cFlow / 3600 * cf.cp * Math.abs(cTout - cTin);
-    Qc = Qlat + Qsens;
+  // === CALCUL CÔTÉ UTILITÉ ===
+  let utilTout, utilFlow;
+  if(utilState==='condensation'){
+    // Vapeur qui condense : T sortie ≈ T sat (condensat), débit = Q / latente
+    utilTout=utilTin; // condensation isotherme
+    utilFlow=Q/uf.lat*3600; // kg/h
+  } else if(utilState==='evaporation'){
+    utilTout=utilTin;
+    utilFlow=Q/uf.lat*3600;
   } else {
-    Qc = cFlow / 3600 * cf.cp * Math.abs(cTout - cTin);
+    // Liquide ou gaz : ΔT = approach
+    const maxDT=approach||15;
+    if(op==='cooling'){
+      utilTout=Math.min(utilTin+maxDT, procTin-5); // ne pas dépasser T process
+    } else {
+      utilTout=Math.max(utilTin-maxDT, procTin+5);
+    }
+    utilFlow=Q/(uf.cp*Math.abs(utilTout-utilTin))*3600; // kg/h
   }
 
-  const Q = (Qh + Qc) / 2; // kW — moyenne
+  // === ASSIGNATION HOT/COLD ===
+  let hf,cf,hFlow,cFlow,hTin,hTout,cTin,cTout,hState,cState,foulH,foulC;
+  if(op==='cooling'){
+    // Process = chaud (calandre), Utilité = froid (tubes)
+    hf=pf;cf=uf;hFlow=procFlow;cFlow=utilFlow;
+    hTin=procTin;hTout=procTout;cTin=utilTin;cTout=utilTout;
+    hState=procState;cState=utilState;foulH=foulProc;foulC=foulUtil;
+  } else {
+    // Utilité = chaud (calandre), Process = froid (tubes)
+    hf=uf;cf=pf;hFlow=utilFlow;cFlow=procFlow;
+    hTin=utilTin;hTout=utilTout;cTin=procTin;cTout=procTout;
+    hState=utilState;cState=procState;foulH=foulUtil;foulC=foulProc;
+  }
 
   // === DTLM ===
-  let dT1, dT2;
-  if (config === 'parallel') {
-    dT1 = hTin - cTin;
-    dT2 = hTout - cTout;
+  let dT1,dT2;
+  if(config==='parallel'){
+    dT1=hTin-cTin;dT2=hTout-cTout;
   } else {
-    dT1 = hTin - cTout;
-    dT2 = hTout - cTin;
+    dT1=hTin-cTout;dT2=hTout-cTin;
   }
-  if (dT1 <= 0 || dT2 <= 0) throw new Error('Croisement de température détecté. Vérifiez les températures.');
+  if(dT1<=0||dT2<=0)throw new Error('Croisement de température. Vérifiez les températures et l\'approche utilité.');
   let LMTD;
-  if (Math.abs(dT1 - dT2) < 0.01) {
-    LMTD = dT1;
-  } else {
-    LMTD = (dT1 - dT2) / Math.log(dT1 / dT2);
-  }
+  if(Math.abs(dT1-dT2)<0.01){LMTD=dT1;}
+  else{LMTD=(dT1-dT2)/Math.log(dT1/dT2);}
 
-  // === FACTEUR DE CORRECTION F ===
-  let F = 1.0;
-  if (config === 'shell12' || config === 'shell24') {
-    const P_r = (cTout - cTin) / (hTin - cTin);
-    const R_r = (hTin - hTout) / (cTout - cTin);
-    if (config === 'shell12') {
-      F = calcF_1_2(P_r, R_r);
-    } else {
-      F = calcF_2_4(P_r, R_r);
-    }
-  } else if (config === 'crossflow') {
-    F = 0.9; // approximation courante
-  }
+  // === FACTEUR F ===
+  let F=1.0;
+  if(config==='shell12'||config==='shell24'){
+    const P_r=(cTout-cTin)/(hTin-cTin);
+    const R_r=(hTin-hTout)/(cTout-cTin||0.01);
+    F=(config==='shell12')?calcF12(P_r,R_r):calcF24(P_r,R_r);
+  } else if(config==='crossflow'){F=0.9;}
+  const LMTD_c=LMTD*F;
 
-  const LMTD_corr = LMTD * F;
+  // === COEFFICIENT U ===
+  const hCat=(hState==='condensation')?'condensation':(hState==='gas'?'gas':'liquid');
+  const cCat=(cState==='evaporation')?'evaporation':(cState==='gas'?'gas':'liquid');
+  let uKey=hCat+'-'+cCat;
+  if(!U_TABLE[uKey])uKey=cCat+'-'+hCat;
+  if(!U_TABLE[uKey])uKey='liquid-liquid';
+  const Uref=U_TABLE[uKey];
 
-  // === COEFFICIENT U ESTIMÉ ===
-  const hCat = (hState==='condensation') ? 'condensation' : (hState==='gas'?'gas':'liquid');
-  const cCat = (cState==='evaporation') ? 'evaporation' : (cState==='gas'?'gas':'liquid');
-  let uKey = hCat + '-' + cCat;
-  if (!U_TABLE[uKey]) uKey = cCat + '-' + hCat;
-  if (!U_TABLE[uKey]) uKey = 'liquid-liquid';
-  const Uref = U_TABLE[uKey];
+  // Géométrie tubes
+  const tubeOD=0.01905,tubeID=0.01575,tubeWall=(tubeOD-tubeID)/2;
+  const tubePitch=tubeOD*1.25,Ltube=4.88;
+  const nPasses=(config==='shell12')?2:(config==='shell24'?4:2);
+  const Atube=Math.PI*tubeID*tubeID/4;
 
-  // === COEFFICIENTS INDIVIDUELS (corrélations) ===
-  // Géométrie tubes standard
-  const tubeOD = 0.01905; // 3/4" = 19.05 mm
-  const tubeID = 0.01575; // BWG 14
-  const tubeWall = (tubeOD - tubeID) / 2;
-  const tubePitch = tubeOD * 1.25; // triangulaire 30°
-  const Ltube = 4.88; // 16 ft standard
-  const nPasses = (config==='shell12') ? 2 : (config==='shell24' ? 4 : 2);
-
-  // hi — côté tube (Dittus-Boelter / Sieder-Tate)
+  // hi (côté tubes = froid)
   let hi;
-  const tubeSideFluid = cf; // convention : froid côté tubes
-  const Atube = Math.PI * tubeID * tubeID / 4;
-  const vTube_init = (cFlow / 3600) / (tubeSideFluid.rho * Atube * 100); // vitesse approx pour 100 tubes
-  const Re_tube = tubeSideFluid.rho * 1.5 * tubeID / (tubeSideFluid.mu * 1e-3);
-  if (cState === 'evaporation') {
-    hi = 2000; // corrélation ébullition simplifiée
-  } else if (Re_tube > 10000) {
-    const n_exp = (cState==='liquid' && cTout > cTin) ? 0.4 : 0.3;
-    hi = 0.023 * Math.pow(Re_tube, 0.8) * Math.pow(tubeSideFluid.pr, n_exp) * tubeSideFluid.lam / tubeID;
-  } else if (Re_tube > 2300) {
-    hi = 0.116 * (Math.pow(Re_tube, 2/3) - 125) * Math.pow(tubeSideFluid.pr, 1/3) * tubeSideFluid.lam / tubeID;
-  } else {
-    hi = 3.66 * tubeSideFluid.lam / tubeID;
-  }
+  const Re_t=cf.rho*1.5*tubeID/(cf.mu*1e-3);
+  if(cState==='evaporation'){hi=2000;}
+  else if(Re_t>10000){hi=0.023*Math.pow(Re_t,0.8)*Math.pow(cf.pr,0.4)*cf.lam/tubeID;}
+  else if(Re_t>2300){hi=0.116*(Math.pow(Re_t,2/3)-125)*Math.pow(cf.pr,1/3)*cf.lam/tubeID;}
+  else{hi=3.66*cf.lam/tubeID;}
 
-  // ho — côté calandre (Kern)
+  // ho (côté calandre = chaud)
   let ho;
-  const shellSideFluid = hf;
-  if (hState === 'condensation') {
-    // Nusselt film condensation
-    ho = 0.725 * Math.pow(
-      shellSideFluid.rho * (shellSideFluid.rho - 1) * 9.81 * shellSideFluid.lat * 1000 *
-      Math.pow(shellSideFluid.lam, 3) /
-      (shellSideFluid.mu * 1e-3 * tubeOD * Math.max(Math.abs(hTin - hTout), 1)),
-      0.25
-    );
-    ho = Math.min(ho, 12000); // plafonnement réaliste
+  if(hState==='condensation'){
+    ho=0.725*Math.pow(hf.rho*(hf.rho-1)*9.81*hf.lat*1000*Math.pow(hf.lam,3)/(hf.mu*1e-3*tubeOD*Math.max(Math.abs(hTin-hTout),1)),0.25);
+    ho=Math.min(ho,12000);
   } else {
-    const De = 4 * (tubePitch * tubePitch * Math.sqrt(3) / 4 - Math.PI * tubeOD * tubeOD / 8) / (Math.PI * tubeOD / 2);
-    const Re_shell = shellSideFluid.rho * 0.8 * De / (shellSideFluid.mu * 1e-3);
-    if (Re_shell > 2000) {
-      ho = 0.36 * Math.pow(Re_shell, 0.55) * Math.pow(shellSideFluid.pr, 1/3) * shellSideFluid.lam / De;
-    } else {
-      ho = 0.8 * shellSideFluid.lam / De * Math.pow(Re_shell * shellSideFluid.pr * De / Ltube, 1/3);
-    }
+    const De=4*(tubePitch*tubePitch*Math.sqrt(3)/4-Math.PI*tubeOD*tubeOD/8)/(Math.PI*tubeOD/2);
+    const Re_s=hf.rho*0.8*De/(hf.mu*1e-3);
+    if(Re_s>2000){ho=0.36*Math.pow(Re_s,0.55)*Math.pow(hf.pr,1/3)*hf.lam/De;}
+    else{ho=0.8*hf.lam/De*Math.pow(Re_s*hf.pr*De/Ltube,1/3);}
   }
+  hi=Math.max(hi,50);ho=Math.max(ho,20);
 
-  hi = Math.max(hi, 50);
-  ho = Math.max(ho, 20);
+  const kWall=MAT_COND[matTube]||50;
+  const Uo=1/(1/ho+foulH+tubeWall/kWall+foulC+tubeOD/(tubeID*hi));
+  const Uo_final=Math.min(Uo,Uref.high);
 
-  // U calculé
-  const kWall = MAT_COND[matTube] || 50;
-  const Uo_calc = 1 / (1/ho + foulH + tubeWall/kWall + foulC + tubeOD/(tubeID * hi));
-  const Uo = Math.min(Uo_calc, Uref.high);
+  // === SURFACE ===
+  const A_net=(Q*1000)/(Uo_final*LMTD_c);
+  const A_design=A_net*(1+overdesign);
 
-  // === SURFACE D'ÉCHANGE ===
-  const A_net = (Q * 1000) / (Uo * LMTD_corr);
-  const A_design = A_net * (1 + overdesign);
-
-  // === GÉOMÉTRIE TUBES & CALANDRE ===
-  const nTubes = Math.ceil(A_design / (Math.PI * tubeOD * Ltube));
-  const nTubesPerPass = Math.ceil(nTubes / nPasses);
-  const CTP = 0.93; // tube count constant (1 pass)
-  const CL = 1.0; // triangulaire
-  const Ds = tubeOD * Math.sqrt(nTubes * CL / (CTP * 0.785)) / 0.85 * tubePitch / tubeOD;
-  const Ds_round = Math.ceil(Ds * 1000 / 50) * 50 / 1000; // arrondi au 50mm
+  // === GÉOMÉTRIE ===
+  const nTubes=Math.ceil(A_design/(Math.PI*tubeOD*Ltube));
+  const nTubesPerPass=Math.ceil(nTubes/nPasses);
+  const Ds=tubeOD*Math.sqrt(nTubes/(0.93*0.785))/0.85*tubePitch/tubeOD;
+  const Ds_r=Math.ceil(Ds*1000/50)*50/1000;
 
   // Vitesses
-  const vTube = (cFlow / 3600) / (cf.rho * nTubesPerPass * Atube);
-  const shellArea = Ds_round * (tubePitch - tubeOD) * 0.4; // approximation
-  const vShell = (hFlow / 3600) / (hf.rho * Math.max(shellArea, 0.001));
+  const vTube=(cFlow/3600)/(cf.rho*nTubesPerPass*Atube);
+  const shellArea=Ds_r*(tubePitch-tubeOD)*0.4;
+  const vShell=(hFlow/3600)/(hf.rho*Math.max(shellArea,0.001));
 
-  // Pertes de charge
-  const fTube = 0.046 * Math.pow(Math.max(Re_tube,1000), -0.2);
-  const dP_tube = (4 * fTube * Ltube / tubeID + 4) * nPasses * cf.rho * vTube * vTube / 2 / 1000;
-  const dP_shell = hf.rho * vShell * vShell / 2 * (Ltube / (0.4 * Ds_round) + 2) * 0.5 / 1000;
+  // ΔP
+  const fT=0.046*Math.pow(Math.max(Re_t,1000),-0.2);
+  const dP_tube=(4*fT*Ltube/tubeID+4)*nPasses*cf.rho*vTube*vTube/2/1000;
+  const dP_shell=hf.rho*vShell*vShell/2*(Ltube/(0.4*Ds_r)+2)*0.5/1000;
 
-  // === ε-NTU ===
-  const Ch = hFlow / 3600 * hf.cp * 1000; // W/K
-  const Cc = cFlow / 3600 * cf.cp * 1000;
-  const Cmin = Math.min(Ch, Cc);
-  const Cmax = Math.max(Ch, Cc);
-  const Cr = Cmin / Cmax;
-  const NTU = Uo * A_design / Cmin;
+  // ε-NTU
+  const Ch=hFlow/3600*hf.cp*1000;
+  const Cc=cFlow/3600*cf.cp*1000;
+  const Cmin=Math.min(Ch,Cc),Cmax=Math.max(Ch,Cc);
+  const Cr=(hState==='condensation'||cState==='evaporation')?0:Cmin/Cmax;
+  const NTU=Uo_final*A_design/Cmin;
   let epsilon;
-  if (Cr < 0.01) {
-    epsilon = 1 - Math.exp(-NTU);
-  } else if (config === 'parallel') {
-    epsilon = (1 - Math.exp(-NTU * (1 + Cr))) / (1 + Cr);
-  } else {
-    epsilon = (1 - Math.exp(-NTU * (1 - Cr))) / (1 - Cr * Math.exp(-NTU * (1 - Cr)));
-  }
-  epsilon = Math.min(epsilon, 1);
+  if(Cr<0.01){epsilon=1-Math.exp(-NTU);}
+  else if(config==='parallel'){epsilon=(1-Math.exp(-NTU*(1+Cr)))/(1+Cr);}
+  else{epsilon=(1-Math.exp(-NTU*(1-Cr)))/(1-Cr*Math.exp(-NTU*(1-Cr)));}
+  epsilon=Math.min(epsilon,1);
 
-  // === SÉLECTION TYPE D'ÉCHANGEUR ===
-  const Pmax = Math.max(v('hP'), v('cP'));
-  const Tmax = Math.max(hTin, cTout);
-  const hasPhaseChange = (hState==='condensation' || hState==='evaporation' || cState==='condensation' || cState==='evaporation');
-  const isViscous = (hf.mu > 10 || cf.mu > 10);
-  const isCorrosive = ['h2so4_98','h2so4_70','hcl_30','naoh_50','naoh_30'].includes(document.getElementById('hFluid').value) ||
-                      ['h2so4_98','h2so4_70','hcl_30','naoh_50','naoh_30'].includes(document.getElementById('cFluid').value);
-
-  let hxType, hxTypeTag, hxReason, hxAlternatives;
-  if (Pmax > 30 || Tmax > 300 || hasPhaseChange) {
-    hxType = 'Tubes & Calandre (Shell & Tube)';
-    hxTypeTag = 'st';
-    hxReason = [];
-    if (Pmax > 30) hxReason.push('Pression élevée (>' + 30 + ' bar)');
-    if (Tmax > 300) hxReason.push('Température élevée (>' + 300 + '°C)');
-    if (hasPhaseChange) hxReason.push('Changement de phase');
-    hxAlternatives = ['Plate & Shell (Vahterus) si P < 100 bar'];
-  } else if (isViscous) {
-    hxType = 'Échangeur spirale';
-    hxTypeTag = 'sp';
-    hxReason = ['Fluide visqueux (μ > 10 mPa·s)','Bon pour encrassement'];
-    hxAlternatives = ['Tubes & calandre avec chicanes rapprochées','Échangeur raclé (HRS)'];
-  } else if (Pmax <= 25 && Tmax <= 150 && !hasPhaseChange) {
-    hxType = 'Échangeur à plaques (PHE)';
-    hxTypeTag = 'phe';
-    hxReason = ['Compact et efficace','Liquide-liquide, P < 25 bar, T < 150°C'];
-    hxAlternatives = ['Plaques brasées (SWEP) si < 30 bar','Tubes & calandre'];
-  } else if (v('cFluid') === '' && cState === 'gas') {
-    hxType = 'Aéroréfrigérant (Air-cooled)';
-    hxTypeTag = 'ac';
-    hxReason = ['Refroidissement par air ambiant','Pas de fluide de refroidissement nécessaire'];
-    hxAlternatives = ['Tubes & calandre avec eau de refroidissement'];
+  // === SÉLECTION TYPE ===
+  const Pmax=Math.max(val('procP'),val('utilP'));
+  const Tmax=Math.max(hTin,cTout);
+  const hasPhase=(hState==='condensation'||hState==='evaporation'||cState==='condensation'||cState==='evaporation');
+  const isViscous=(hf.mu>10||cf.mu>10);
+  let hxType,hxTag,hxReason=[],hxAlt=[];
+  if(Pmax>30||Tmax>300||hasPhase){
+    hxType='Tubes & Calandre (Shell & Tube)';hxTag='st';
+    if(Pmax>30)hxReason.push('Pression élevée (>30 bar)');
+    if(Tmax>300)hxReason.push('Température élevée (>300°C)');
+    if(hasPhase)hxReason.push('Changement de phase');
+    hxAlt=['Plate & Shell (Vahterus) si P < 100 bar'];
+  } else if(isViscous){
+    hxType='Échangeur spirale';hxTag='sp';
+    hxReason=['Fluide visqueux (μ > 10 mPa·s)'];hxAlt=['Tubes & calandre','Échangeur raclé (HRS)'];
+  } else if(Pmax<=25&&Tmax<=150){
+    hxType='Échangeur à plaques (PHE)';hxTag='phe';
+    hxReason=['Compact et efficace','P < 25 bar, T < 150°C'];hxAlt=['Plaques brasées (SWEP)','Tubes & calandre'];
   } else {
-    hxType = 'Tubes & Calandre (Shell & Tube)';
-    hxTypeTag = 'st';
-    hxReason = ['Configuration standard polyvalente'];
-    hxAlternatives = ['Échangeur à plaques si conditions modérées'];
+    hxType='Tubes & Calandre (Shell & Tube)';hxTag='st';
+    hxReason=['Configuration standard polyvalente'];hxAlt=['Échangeur à plaques si conditions modérées'];
   }
 
-  // === DÉSIGNATION TEMA ===
   let temaType;
-  if (hasPhaseChange && hState === 'condensation') temaType = 'AES';
-  else if (hasPhaseChange && cState === 'evaporation') temaType = 'AKT';
-  else if (Tmax > 200) temaType = 'BEM';
-  else temaType = 'AES';
+  if(hasPhase&&hState==='condensation')temaType='AES';
+  else if(hasPhase&&cState==='evaporation')temaType='AKT';
+  else if(Tmax>200)temaType='BEM';
+  else temaType='AES';
 
-  // === STOCKER RÉSULTATS ===
-  R = {
-    Q, Qh, Qc, LMTD, F, LMTD_corr, Uo, Uref, A_net, A_design,
-    hi, ho, kWall, foulH, foulC,
-    nTubes, nPasses, nTubesPerPass, tubeOD: tubeOD*1000, tubeID: tubeID*1000, Ltube,
-    Ds: Ds_round*1000, tubePitch: tubePitch*1000,
-    vTube, vShell, Re_tube, dP_tube, dP_shell,
-    NTU, Cr, epsilon, Cmin, Cmax,
-    hxType, hxTypeTag, hxReason, hxAlternatives, temaType,
-    hf, cf, hState, cState, config,
-    hFlow, hTin, hTout, cFlow, cTin, cTout,
-    Pmax, Tmax, matTube, matShell, overdesign,
-    hasPhaseChange, isViscous, isCorrosive
+  // STOCKER
+  R={Q,procTout,utilTout,utilFlow,
+    hf,cf,hFlow,cFlow,hTin,hTout,cTin,cTout,hState,cState,
+    LMTD,F,LMTD_c,Uo:Uo_final,Uref,A_net,A_design,
+    hi,ho,kWall,foulH,foulC,
+    nTubes,nPasses,nTubesPerPass,tubeOD:tubeOD*1000,tubeID:tubeID*1000,Ltube,
+    Ds:Ds_r*1000,tubePitch:tubePitch*1000,
+    vTube,vShell,Re_tube:Re_t,dP_tube,dP_shell,
+    NTU,Cr,epsilon,Cmin,Cmax,
+    hxType,hxTag,hxReason,hxAlt,temaType,
+    Pmax,Tmax,matTube,matShell,overdesign,
+    hasPhase,isViscous,config,
+    pf,uf,op:op,procFlow:procFlow,procTin:val('procTin'),
+    utilTin:utilTin,procState,utilState
   };
 
-  renderResults();
-  renderGeometry();
-  renderCurves();
-  renderSuppliers();
-  renderSpec();
-  renderReport();
+  renderResults();renderGeometry();renderCurves();renderSuppliers();renderSpec();renderReport();
 }
 
-// ===================== FACTEUR F (1-2 shell) =====================
-function calcF_1_2(P, R) {
-  if (P <= 0 || P >= 1 || R <= 0) return 1;
-  if (Math.abs(R - 1) < 0.01) {
-    const S = P / (1 - P + P / Math.sqrt(2));
-    return Math.sqrt(2) * (1 - S) / ((1 - S) > 0 ? Math.log((1)/(1-S)) : 1);
-  }
-  const S = Math.sqrt(R*R + 1);
-  const W = ((1 - P*R)/(1 - P));
-  if (W <= 0) return 0.75;
-  const num = S * Math.log(W) / (R - 1);
-  const A = (2/P - 1 - R + S) / (2/P - 1 - R - S);
-  if (A <= 0) return 0.75;
-  const den = Math.log(A);
-  if (Math.abs(den) < 1e-6) return 1;
-  return Math.max(0.5, Math.min(1, num / den));
+function calcF12(P,R){
+  if(P<=0||P>=1||R<=0)return 1;
+  if(Math.abs(R-1)<0.01)return Math.max(0.5,Math.min(1,(Math.sqrt(2)*P/((1-P)*Math.log((2-P*(2-Math.sqrt(2)))/(2-P*(2+Math.sqrt(2))))))||1));
+  const S=Math.sqrt(R*R+1);
+  const W=(1-P*R)/(1-P);
+  if(W<=0)return 0.75;
+  const A=(2/P-1-R+S)/(2/P-1-R-S);
+  if(A<=0)return 0.75;
+  return Math.max(0.5,Math.min(1,S*Math.log(W)/(R-1)/Math.log(A)));
 }
-
-function calcF_2_4(P, R) {
-  const P1 = (1 - Math.pow((1-P*R)/(1-P), 0.5)) / (R - Math.pow((1-P*R)/(1-P), 0.5));
-  return calcF_1_2(P1, R);
+function calcF24(P,R){
+  const P1=(1-Math.pow(Math.max((1-P*R)/(1-P),0.001),0.5))/(R-Math.pow(Math.max((1-P*R)/(1-P),0.001),0.5));
+  return calcF12(Math.max(0.01,Math.min(0.99,P1)),R);
 }
 
 // ===================== RENDU RÉSULTATS =====================
-function renderResults() {
-  document.getElementById('noResults').style.display = 'none';
-  document.getElementById('resultsContent').style.display = 'block';
+function renderResults(){
+  document.getElementById('noResults').style.display='none';
+  document.getElementById('resultsContent').style.display='block';
 
-  // Bilan thermique
-  document.getElementById('rgThermal').innerHTML = `
+  document.getElementById('rgThermal').innerHTML=`
     <div class="ri"><div class="rv">${fmt(R.Q,1)}</div><div class="rl">Puissance thermique</div><div class="ru">kW</div></div>
     <div class="ri"><div class="rv">${fmt(R.LMTD,1)}</div><div class="rl">DTLM</div><div class="ru">°C</div></div>
     <div class="ri"><div class="rv">${fmt(R.F,3)}</div><div class="rl">Facteur F</div><div class="ru">—</div></div>
-    <div class="ri"><div class="rv">${fmt(R.LMTD_corr,1)}</div><div class="rl">DTLM corrigé</div><div class="ru">°C</div></div>
+    <div class="ri"><div class="rv">${fmt(R.LMTD_c,1)}</div><div class="rl">DTLM corrigé</div><div class="ru">°C</div></div>
     <div class="ri"><div class="rv">${fmt(R.Uo,0)}</div><div class="rl">U global</div><div class="ru">W/(m²·K)</div></div>
     <div class="ri"><div class="rv">${fmt(R.A_net,1)}</div><div class="rl">Surface nette</div><div class="ru">m²</div></div>
-    <div class="ri"><div class="rv">${fmt(R.A_design,1)}</div><div class="rl">Surface design (+${R.overdesign*100}%)</div><div class="ru">m²</div></div>
-    <div class="ri"><div class="rv">${fmt(R.epsilon*100,1)}</div><div class="rl">Efficacité ε</div><div class="ru">%</div></div>
-  `;
+    <div class="ri"><div class="rv">${fmt(R.A_design,1)}</div><div class="rl">Surface design (+${(R.overdesign*100).toFixed(0)}%)</div><div class="ru">m²</div></div>
+    <div class="ri"><div class="rv">${fmt(R.epsilon*100,1)}</div><div class="rl">Efficacité ε</div><div class="ru">%</div></div>`;
+
+  // Utilité calculée
+  document.getElementById('rgUtility').innerHTML=`
+    <div class="ri"><div class="rv">${fmt(R.utilFlow,0)}</div><div class="rl">Débit utilité calculé</div><div class="ru">kg/h</div></div>
+    <div class="ri"><div class="rv">${fmt(R.utilFlow/((R.uf||R.cf).rho||1000)*1000/1000,1)}</div><div class="rl">Débit utilité</div><div class="ru">m³/h</div></div>
+    <div class="ri"><div class="rv">${fmt(R.utilTout,1)}</div><div class="rl">T sortie utilité</div><div class="ru">°C</div></div>
+    <div class="ri"><div class="rv">${fmt(R.procTout,1)}</div><div class="rl">T sortie process</div><div class="ru">°C</div></div>`;
 
   // Type recommandé
-  const tagClass = {'st':'tag-st','phe':'tag-phe','sp':'tag-sp','ac':'tag-ac','dp':'tag-dp'};
-  document.getElementById('hxTypeRecommendation').innerHTML = `
+  document.getElementById('hxTypeRecommendation').innerHTML=`
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-      <span style="font-size:2rem">${R.hxTypeTag==='st'?'🔩':R.hxTypeTag==='phe'?'📦':R.hxTypeTag==='sp'?'🌀':R.hxTypeTag==='ac'?'💨':'🔧'}</span>
-      <div>
-        <div style="font-size:1.3rem;font-weight:700;color:var(--acc)">${R.hxType}</div>
-        ${R.temaType ? '<span class="tag tag-st">TEMA '+R.temaType+'</span>' : ''}
-      </div>
+      <span style="font-size:2rem">${R.hxTag==='st'?'🔩':R.hxTag==='phe'?'📦':R.hxTag==='sp'?'🌀':'💨'}</span>
+      <div><div style="font-size:1.3rem;font-weight:700;color:var(--acc)">${R.hxType}</div>
+      ${R.temaType?'<span class="tag tag-st">TEMA '+R.temaType+'</span>':''}</div>
     </div>
     <div class="okb"><strong>Justification :</strong><ul>${R.hxReason.map(r=>'<li>'+r+'</li>').join('')}</ul></div>
-    <div class="ib"><strong>Alternatives :</strong><ul>${R.hxAlternatives.map(a=>'<li>'+a+'</li>').join('')}</ul></div>
-  `;
+    <div class="ib"><strong>Alternatives :</strong><ul>${R.hxAlt.map(a=>'<li>'+a+'</li>').join('')}</ul></div>`;
 
-  // Dimensionnement
-  document.getElementById('rgSizing').innerHTML = `
+  document.getElementById('rgSizing').innerHTML=`
     <div class="ri"><div class="rv">${R.nTubes}</div><div class="rl">Nombre de tubes</div></div>
     <div class="ri"><div class="rv">${R.nPasses}</div><div class="rl">Passes tubes</div></div>
     <div class="ri"><div class="rv">${fmt(R.tubeOD,1)}×${fmt(R.tubeID,1)}</div><div class="rl">Tubes OD × ID</div><div class="ru">mm</div></div>
     <div class="ri"><div class="rv">${fmt(R.Ltube,2)}</div><div class="rl">Longueur tubes</div><div class="ru">m</div></div>
     <div class="ri"><div class="rv">${fmt(R.Ds,0)}</div><div class="rl">Ø Calandre</div><div class="ru">mm</div></div>
-    <div class="ri"><div class="rv">${fmt(R.tubePitch,1)}</div><div class="rl">Pitch tubes</div><div class="ru">mm</div></div>
-  `;
+    <div class="ri"><div class="rv">${fmt(R.tubePitch,1)}</div><div class="rl">Pitch tubes</div><div class="ru">mm</div></div>`;
 
-  // Hydraulique
-  const dPhOK = R.dP_tube <= v('dPh');
-  const dPcOK = R.dP_shell <= v('dPc');
-  document.getElementById('rgHydraulic').innerHTML = `
+  const dp1OK=R.dP_tube<=val('dPproc'),dp2OK=R.dP_shell<=val('dPutil');
+  document.getElementById('rgHydraulic').innerHTML=`
     <div class="ri"><div class="rv">${fmt(R.vTube,2)}</div><div class="rl">Vitesse tubes</div><div class="ru">m/s</div></div>
     <div class="ri"><div class="rv">${fmt(R.vShell,2)}</div><div class="rl">Vitesse calandre</div><div class="ru">m/s</div></div>
     <div class="ri"><div class="rv">${fmt(R.Re_tube,0)}</div><div class="rl">Re tubes</div><div class="ru">${R.Re_tube>10000?'Turbulent':R.Re_tube>2300?'Transition':'Laminaire'}</div></div>
-    <div class="ri"><div class="rv" style="color:${dPhOK?'var(--ok)':'var(--err)'}">${fmt(R.dP_tube,1)}</div><div class="rl">ΔP côté tubes</div><div class="ru">kPa</div></div>
-    <div class="ri"><div class="rv" style="color:${dPcOK?'var(--ok)':'var(--err)'}">${fmt(R.dP_shell,1)}</div><div class="rl">ΔP côté calandre</div><div class="ru">kPa</div></div>
-  `;
-  let alerts = '';
-  if (!dPhOK) alerts += '<div class="eb">⚠️ ΔP tubes ('+fmt(R.dP_tube,1)+' kPa) dépasse la limite admissible ('+v('dPh')+' kPa). Augmenter le nombre de tubes ou réduire les passes.</div>';
-  if (!dPcOK) alerts += '<div class="eb">⚠️ ΔP calandre ('+fmt(R.dP_shell,1)+' kPa) dépasse la limite admissible ('+v('dPc')+' kPa). Augmenter le diamètre calandre ou l\'espacement des chicanes.</div>';
-  if (R.vTube > 3) alerts += '<div class="wb">⚡ Vitesse tubes élevée ('+fmt(R.vTube,1)+' m/s). Risque d\'érosion si > 3 m/s.</div>';
-  if (R.vTube < 0.5) alerts += '<div class="wb">⚡ Vitesse tubes faible ('+fmt(R.vTube,2)+' m/s). Risque d\'encrassement accéléré si < 0.5 m/s.</div>';
-  document.getElementById('hydraulicAlerts').innerHTML = alerts;
+    <div class="ri"><div class="rv" style="color:${dp1OK?'var(--ok)':'var(--err)'}">${fmt(R.dP_tube,1)}</div><div class="rl">ΔP tubes</div><div class="ru">kPa</div></div>
+    <div class="ri"><div class="rv" style="color:${dp2OK?'var(--ok)':'var(--err)'}">${fmt(R.dP_shell,1)}</div><div class="rl">ΔP calandre</div><div class="ru">kPa</div></div>`;
+  let alerts='';
+  if(!dp1OK)alerts+='<div class="eb">⚠️ ΔP tubes dépasse la limite. Augmenter le nombre de tubes ou réduire les passes.</div>';
+  if(!dp2OK)alerts+='<div class="eb">⚠️ ΔP calandre dépasse la limite. Augmenter le diamètre calandre.</div>';
+  if(R.vTube>3)alerts+='<div class="wb">Vitesse tubes élevée ('+fmt(R.vTube,1)+' m/s) — risque d\'érosion.</div>';
+  if(R.vTube<0.5&&R.vTube>0)alerts+='<div class="wb">Vitesse tubes faible ('+fmt(R.vTube,2)+' m/s) — risque d\'encrassement.</div>';
+  document.getElementById('hydraulicAlerts').innerHTML=alerts;
 
-  // Coefficients
-  document.getElementById('rgCoeff').innerHTML = `
-    <div class="ri"><div class="rv">${fmt(R.hi,0)}</div><div class="rl">hi (côté tubes)</div><div class="ru">W/(m²·K)</div></div>
-    <div class="ri"><div class="rv">${fmt(R.ho,0)}</div><div class="rl">ho (côté calandre)</div><div class="ru">W/(m²·K)</div></div>
+  document.getElementById('rgCoeff').innerHTML=`
+    <div class="ri"><div class="rv">${fmt(R.hi,0)}</div><div class="rl">hi (tubes)</div><div class="ru">W/(m²·K)</div></div>
+    <div class="ri"><div class="rv">${fmt(R.ho,0)}</div><div class="rl">ho (calandre)</div><div class="ru">W/(m²·K)</div></div>
     <div class="ri"><div class="rv">${fmt(R.kWall,1)}</div><div class="rl">k paroi (${MAT_NAMES[R.matTube]})</div><div class="ru">W/(m·K)</div></div>
     <div class="ri"><div class="rv">${fmtE(R.foulH)}</div><div class="rl">Fouling chaud</div><div class="ru">m²·K/W</div></div>
     <div class="ri"><div class="rv">${fmtE(R.foulC)}</div><div class="rl">Fouling froid</div><div class="ru">m²·K/W</div></div>
-    <div class="ri"><div class="rv">${fmt(R.NTU,2)}</div><div class="rl">NTU</div></div>
-  `;
+    <div class="ri"><div class="rv">${fmt(R.NTU,2)}</div><div class="rl">NTU</div></div>`;
 }
 
-// ===================== RENDU GÉOMÉTRIE =====================
-function renderGeometry() {
-  document.getElementById('noGeom').style.display = 'none';
-  document.getElementById('geomContent').style.display = 'block';
+// ===================== GÉOMÉTRIE =====================
+function renderGeometry(){
+  document.getElementById('noGeom').style.display='none';
+  document.getElementById('geomContent').style.display='block';
+  const T={AES:{f:'A — Chapeau amovible',s:'E — 1 passe',r:'S — Flottante interne'},BEM:{f:'B — Calotte',s:'E — 1 passe',r:'M — Plaque fixe'},AKT:{f:'A — Chapeau amovible',s:'K — Bouilloire',r:'T — Flottante à bride'}};
+  const t=T[R.temaType]||T.AES;
+  document.getElementById('geomParams').innerHTML=`<table class="rt">
+    <tr><th colspan="2">TEMA ${R.temaType}</th></tr>
+    <tr><td>Avant</td><td>${t.f}</td></tr><tr><td>Calandre</td><td>${t.s}</td></tr><tr><td>Arrière</td><td>${t.r}</td></tr>
+    <tr><th colspan="2">Dimensions</th></tr>
+    <tr><td>Ø calandre</td><td>${fmt(R.Ds,0)} mm</td></tr>
+    <tr><td>Tubes</td><td>${R.nTubes} × Ø${fmt(R.tubeOD,1)} × ${fmt(R.Ltube*1000,0)} mm</td></tr>
+    <tr><td>Pitch</td><td>${fmt(R.tubePitch,1)} mm — Triangulaire 30°</td></tr>
+    <tr><td>Passes</td><td>${R.nPasses}</td></tr>
+    <tr><td>Chicanes</td><td>Segmentées 25% — esp. ${fmt(R.Ds*0.4,0)} mm</td></tr>
+    <tr><th colspan="2">Matériaux</th></tr>
+    <tr><td>Tubes</td><td>${MAT_NAMES[R.matTube]}</td></tr>
+    <tr><td>Calandre</td><td>${MAT_NAMES[R.matShell]}</td></tr>
+    <tr><th colspan="2">Surface</th></tr>
+    <tr><td>Nette</td><td>${fmt(R.A_net,2)} m²</td></tr>
+    <tr><td>Design (+${(R.overdesign*100).toFixed(0)}%)</td><td>${fmt(R.A_design,2)} m²</td></tr></table>`;
 
-  const temaTypes = {
-    'AES': {front:'A — Tête à chapeau amovible', shell:'E — 1 passe calandre', rear:'S — Tête flottante interne'},
-    'BEM': {front:'B — Tête à calotte', shell:'E — 1 passe calandre', rear:'M — Plaque tubulaire fixe'},
-    'AKT': {front:'A — Tête à chapeau amovible', shell:'K — Bouilloire (kettle)', rear:'T — Tête flottante à bride'},
-  };
-  const tema = temaTypes[R.temaType] || temaTypes['AES'];
+  // SVG
+  const w=700,h=300,Ds=Math.min(200,Math.max(80,R.Ds/5)),Lt=400,x0=100,y0=(h-Ds)/2;
+  let s=`<svg viewBox="0 0 ${w} ${h}" style="width:100%;max-height:300px" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<defs><linearGradient id="gS" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/><stop offset="100%" stop-color="#1e40af" stop-opacity="0.3"/></linearGradient></defs>`;
+  s+=`<rect x="${x0}" y="${y0}" width="${Lt}" height="${Ds}" rx="10" fill="url(#gS)" stroke="#60a5fa" stroke-width="2"/>`;
+  const nl=Math.min(8,R.nTubes);
+  for(let i=0;i<nl;i++){const ty=y0+15+i*(Ds-30)/(nl-1);s+=`<line x1="${x0+20}" y1="${ty}" x2="${x0+Lt-20}" y2="${ty}" stroke="#f59e0b" stroke-width="1.5" opacity="0.6"/>`;}
+  for(let i=1;i<=4;i++){const bx=x0+i*Lt/5;if(i%2===1)s+=`<line x1="${bx}" y1="${y0}" x2="${bx}" y2="${y0+Ds*0.75}" stroke="#94a3b8" stroke-width="2"/>`;else s+=`<line x1="${bx}" y1="${y0+Ds*0.25}" x2="${bx}" y2="${y0+Ds}" stroke="#94a3b8" stroke-width="2"/>`;}
+  s+=`<rect x="${x0+60}" y="${y0-25}" width="20" height="25" fill="none" stroke="#ef4444" stroke-width="2"/>`;
+  s+=`<text x="${x0+70}" y="${y0-30}" text-anchor="middle" fill="#ef4444" font-size="10">Hot in</text>`;
+  s+=`<rect x="${x0+Lt-80}" y="${y0+Ds}" width="20" height="25" fill="none" stroke="#ef4444" stroke-width="2"/>`;
+  s+=`<text x="${x0+Lt-70}" y="${y0+Ds+40}" text-anchor="middle" fill="#ef4444" font-size="10">Hot out</text>`;
+  s+=`<path d="M${x0},${y0} Q${x0-30},${y0+Ds/2} ${x0},${y0+Ds}" fill="none" stroke="#60a5fa" stroke-width="2"/>`;
+  s+=`<path d="M${x0+Lt},${y0} Q${x0+Lt+30},${y0+Ds/2} ${x0+Lt},${y0+Ds}" fill="none" stroke="#60a5fa" stroke-width="2"/>`;
+  s+=`<text x="${x0+Lt+50}" y="${y0+Ds*0.3+4}" fill="#3b82f6" font-size="10">Cold in →</text>`;
+  s+=`<text x="${x0-75}" y="${y0+Ds*0.7+4}" fill="#3b82f6" font-size="10">← Cold out</text>`;
+  s+=`<text x="${x0+Lt/2}" y="${h-10}" text-anchor="middle" fill="#94a3b8" font-size="11">TEMA ${R.temaType} — Ø${fmt(R.Ds,0)}mm × ${fmt(R.Ltube*1000,0)}mm — ${R.nTubes} tubes</text>`;
+  s+=`</svg>`;
+  document.getElementById('geomSVG').innerHTML=s;
 
-  document.getElementById('geomParams').innerHTML = `
-    <table class="rt">
-      <tr><th colspan="2">Géométrie Tubes & Calandre — TEMA ${R.temaType}</th></tr>
-      <tr><td>Type avant</td><td>${tema.front}</td></tr>
-      <tr><td>Type calandre</td><td>${tema.shell}</td></tr>
-      <tr><td>Type arrière</td><td>${tema.rear}</td></tr>
-      <tr><th colspan="2">Dimensions</th></tr>
-      <tr><td>Diamètre calandre</td><td>${fmt(R.Ds,0)} mm</td></tr>
-      <tr><td>Nombre de tubes</td><td>${R.nTubes}</td></tr>
-      <tr><td>Longueur tubes</td><td>${fmt(R.Ltube*1000,0)} mm</td></tr>
-      <tr><td>Tubes OD × épaisseur</td><td>${fmt(R.tubeOD,2)} × ${fmt((R.tubeOD-R.tubeID)/2,2)} mm</td></tr>
-      <tr><td>Pitch (pas)</td><td>${fmt(R.tubePitch,2)} mm — Triangulaire 30°</td></tr>
-      <tr><td>Passes tubes</td><td>${R.nPasses}</td></tr>
-      <tr><td>Chicanes (baffles)</td><td>Segmentées 25% — espacement ${fmt(R.Ds*0.4,0)} mm</td></tr>
-      <tr><th colspan="2">Matériaux</th></tr>
-      <tr><td>Tubes</td><td>${MAT_NAMES[R.matTube]}</td></tr>
-      <tr><td>Calandre</td><td>${MAT_NAMES[R.matShell]}</td></tr>
-      <tr><th colspan="2">Surface d'échange</th></tr>
-      <tr><td>Surface nette calculée</td><td>${fmt(R.A_net,2)} m²</td></tr>
-      <tr><td>Surface avec surdesign</td><td>${fmt(R.A_design,2)} m² (+${R.overdesign*100}%)</td></tr>
-    </table>
-  `;
-
-  // SVG schéma simplifié
-  renderHXsvg();
-
-  // Référence TEMA
-  document.getElementById('temaRef').innerHTML = `
-    <div class="ib">
-      <strong>Nomenclature TEMA :</strong> 3 lettres décrivant la tête avant + calandre + tête arrière.<br>
-      Exemples courants : <strong>AES</strong> (standard), <strong>BEM</strong> (fixe, économique), <strong>AEL</strong> (tube fixe),
-      <strong>AKT</strong> (bouilloire/rebouilleur), <strong>CFU</strong> (2 passes calandre, U-tubes).
-    </div>
-  `;
+  document.getElementById('temaRef').innerHTML=`<div class="ib">
+    <strong>TEMA :</strong> 3 lettres = tête avant + calandre + tête arrière.<br>
+    <strong>AES</strong> (standard), <strong>BEM</strong> (fixe, économique), <strong>AKT</strong> (bouilloire), <strong>CFU</strong> (2 passes, U-tubes).</div>`;
 }
 
-function renderHXsvg() {
-  const w = 700, h = 300;
-  const Ds = Math.min(200, Math.max(80, R.Ds / 5));
-  const Lt = 400;
-  const x0 = 100, y0 = (h - Ds) / 2;
+// ===================== COURBES =====================
+function renderCurves(){
+  document.getElementById('noCurves').style.display='none';
+  document.getElementById('curvesContent').style.display='block';
+  Object.values(charts).forEach(c=>c.destroy());charts={};
+  const co={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8'}}}};
+  const ax=(xt,yt)=>({scales:{x:{title:{display:true,text:xt,color:'#94a3b8'},ticks:{color:'#64748b'}},y:{title:{display:true,text:yt,color:'#94a3b8'},ticks:{color:'#64748b'}}}});
 
-  let svg = `<svg viewBox="0 0 ${w} ${h}" style="width:100%;max-height:300px" xmlns="http://www.w3.org/2000/svg">`;
-  svg += `<defs><linearGradient id="gShell" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/><stop offset="100%" stop-color="#1e40af" stop-opacity="0.3"/></linearGradient></defs>`;
+  // Profil T
+  const n=20,xD=[],hT=[],cT=[];
+  for(let i=0;i<=n;i++){const f=i/n;xD.push(fmt(f*R.A_design,1));hT.push(R.hTin-f*(R.hTin-R.hTout));
+    cT.push(R.config==='parallel'?R.cTin+f*(R.cTout-R.cTin):R.cTout-f*(R.cTout-R.cTin));}
+  charts.temp=new Chart(document.getElementById('chartTemp'),{type:'line',data:{labels:xD,datasets:[
+    {label:'Côté chaud',data:hT,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.1)',fill:true,tension:0.3},
+    {label:'Côté froid',data:cT,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.1)',fill:true,tension:0.3}
+  ]},options:{...co,...ax('Surface (m²)','Température (°C)')}});
 
-  // Calandre
-  svg += `<rect x="${x0}" y="${y0}" width="${Lt}" height="${Ds}" rx="10" fill="url(#gShell)" stroke="#60a5fa" stroke-width="2"/>`;
+  // ε-NTU
+  const nD=[],e0=[],e5=[],e1=[];
+  for(let i=0;i<=50;i++){const ntu=i*0.1;nD.push(fmt(ntu,1));
+    e0.push((1-Math.exp(-ntu))*100);
+    e5.push(((1-Math.exp(-ntu*0.5))/(1-0.5*Math.exp(-ntu*0.5)))*100);
+    e1.push((ntu/(1+ntu))*100);}
+  charts.ntu=new Chart(document.getElementById('chartNTU'),{type:'line',data:{labels:nD,datasets:[
+    {label:'Cr=0',data:e0,borderColor:'#10b981',borderWidth:1.5,pointRadius:0,tension:0.3},
+    {label:'Cr=0.5',data:e5,borderColor:'#f59e0b',borderWidth:1.5,pointRadius:0,tension:0.3},
+    {label:'Cr=1',data:e1,borderColor:'#ef4444',borderWidth:1.5,pointRadius:0,tension:0.3},
+    {label:'Fonctionnement',data:nD.map((x,i)=>Math.abs(parseFloat(x)-R.NTU)<0.1?R.epsilon*100:null),borderColor:'#fff',backgroundColor:'#f59e0b',pointRadius:8,pointStyle:'star',showLine:false}
+  ]},options:{...co,...ax('NTU','Efficacité ε (%)'),scales:{...ax('NTU','ε (%)').scales,y:{...ax('','').scales.y,min:0,max:100}}}});
 
-  // Tubes (quelques lignes)
-  const nLines = Math.min(8, R.nTubes);
-  for (let i = 0; i < nLines; i++) {
-    const ty = y0 + 15 + i * (Ds - 30) / (nLines - 1);
-    svg += `<line x1="${x0+20}" y1="${ty}" x2="${x0+Lt-20}" y2="${ty}" stroke="#f59e0b" stroke-width="1.5" opacity="0.6"/>`;
-  }
+  // ΔP vs débit
+  const fm=[],dpT=[],dpS=[];
+  for(let i=2;i<=20;i++){const m=i/10;fm.push(fmt(m*100,0)+'%');dpT.push(R.dP_tube*m*m);dpS.push(R.dP_shell*m*m);}
+  charts.dp=new Chart(document.getElementById('chartDP'),{type:'line',data:{labels:fm,datasets:[
+    {label:'ΔP tubes',data:dpT,borderColor:'#3b82f6',tension:0.3,pointRadius:2},
+    {label:'ΔP calandre',data:dpS,borderColor:'#ef4444',tension:0.3,pointRadius:2}
+  ]},options:{...co,...ax('Débit (% nominal)','ΔP (kPa)')}});
 
-  // Chicanes
-  for (let i = 1; i <= 4; i++) {
-    const bx = x0 + i * Lt / 5;
-    const cut = Ds * 0.25;
-    if (i % 2 === 1) {
-      svg += `<line x1="${bx}" y1="${y0}" x2="${bx}" y2="${y0+Ds-cut}" stroke="#94a3b8" stroke-width="2"/>`;
-    } else {
-      svg += `<line x1="${bx}" y1="${y0+cut}" x2="${bx}" y2="${y0+Ds}" stroke="#94a3b8" stroke-width="2"/>`;
-    }
-  }
+  // U vs débit
+  const uD=[];for(let i=2;i<=20;i++)uD.push(R.Uo*Math.pow(i/10,0.8));
+  charts.u=new Chart(document.getElementById('chartU'),{type:'line',data:{labels:fm,datasets:[
+    {label:'U (W/m²·K)',data:uD,borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',fill:true,tension:0.3,pointRadius:2}
+  ]},options:{...co,...ax('Débit (% nominal)','U (W/m²·K)')}});
 
-  // Nozzles
-  svg += `<rect x="${x0+60}" y="${y0-25}" width="20" height="25" fill="none" stroke="#ef4444" stroke-width="2"/>`;
-  svg += `<text x="${x0+70}" y="${y0-30}" text-anchor="middle" fill="#ef4444" font-size="10">Hot in</text>`;
-  svg += `<rect x="${x0+Lt-80}" y="${y0+Ds}" width="20" height="25" fill="none" stroke="#ef4444" stroke-width="2"/>`;
-  svg += `<text x="${x0+Lt-70}" y="${y0+Ds+40}" text-anchor="middle" fill="#ef4444" font-size="10">Hot out</text>`;
-
-  // Têtes
-  svg += `<path d="M${x0},${y0} Q${x0-30},${y0+Ds/2} ${x0},${y0+Ds}" fill="none" stroke="#60a5fa" stroke-width="2"/>`;
-  svg += `<path d="M${x0+Lt},${y0} Q${x0+Lt+30},${y0+Ds/2} ${x0+Lt},${y0+Ds}" fill="none" stroke="#60a5fa" stroke-width="2"/>`;
-
-  // Cold in/out
-  svg += `<line x1="${x0+Lt+30}" y1="${y0+Ds*0.3}" x2="${x0+Lt+60}" y2="${y0+Ds*0.3}" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr)"/>`;
-  svg += `<text x="${x0+Lt+65}" y="${y0+Ds*0.3+4}" fill="#3b82f6" font-size="10">Cold in</text>`;
-  svg += `<line x1="${x0-30}" y1="${y0+Ds*0.7}" x2="${x0-60}" y2="${y0+Ds*0.7}" stroke="#3b82f6" stroke-width="2"/>`;
-  svg += `<text x="${x0-90}" y="${y0+Ds*0.7+4}" fill="#3b82f6" font-size="10">Cold out</text>`;
-
-  // Labels
-  svg += `<text x="${x0+Lt/2}" y="${h-10}" text-anchor="middle" fill="#94a3b8" font-size="11">TEMA ${R.temaType} — Ø${fmt(R.Ds,0)}mm × ${fmt(R.Ltube*1000,0)}mm — ${R.nTubes} tubes</text>`;
-
-  svg += `</svg>`;
-  document.getElementById('geomSVG').innerHTML = svg;
+  // Q-T
+  const ql=['0',fmt(R.Q*0.25,0),fmt(R.Q*0.5,0),fmt(R.Q*0.75,0),fmt(R.Q,0)];
+  const qH=[R.hTin,R.hTin-(R.hTin-R.hTout)*0.25,R.hTin-(R.hTin-R.hTout)*0.5,R.hTin-(R.hTin-R.hTout)*0.75,R.hTout];
+  const qC=[R.cTin,R.cTin+(R.cTout-R.cTin)*0.25,R.cTin+(R.cTout-R.cTin)*0.5,R.cTin+(R.cTout-R.cTin)*0.75,R.cTout];
+  charts.qt=new Chart(document.getElementById('chartQT'),{type:'line',data:{labels:ql,datasets:[
+    {label:'Courbe chaude',data:qH,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.15)',fill:'+1',tension:0.1,pointRadius:4},
+    {label:'Courbe froide',data:qC,borderColor:'#3b82f6',tension:0.1,pointRadius:4}
+  ]},options:{...co,...ax('Q échangé (kW)','T (°C)')}});
 }
 
-// ===================== RENDU COURBES =====================
-function renderCurves() {
-  document.getElementById('noCurves').style.display = 'none';
-  document.getElementById('curvesContent').style.display = 'block';
-
-  // Détruire les anciens graphiques
-  Object.values(charts).forEach(c => c.destroy());
-  charts = {};
-
-  // 1. Profil de température
-  const nPts = 20;
-  const xData = [], hotT = [], coldT = [];
-  for (let i = 0; i <= nPts; i++) {
-    const frac = i / nPts;
-    xData.push(fmt(frac * R.A_design, 1));
-    hotT.push(R.hTin - frac * (R.hTin - R.hTout));
-    coldT.push(R.config === 'counter'
-      ? R.cTout - frac * (R.cTout - R.cTin)
-      : R.cTin + frac * (R.cTout - R.cTin));
-  }
-  charts.temp = new Chart(document.getElementById('chartTemp'), {
-    type: 'line',
-    data: {
-      labels: xData,
-      datasets: [
-        {label: 'Côté chaud', data: hotT, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true, tension: 0.3},
-        {label: 'Côté froid', data: coldT, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3}
-      ]
-    },
-    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8'}}},scales:{x:{title:{display:true,text:'Surface (m²)',color:'#94a3b8'},ticks:{color:'#64748b'}},y:{title:{display:true,text:'Température (°C)',color:'#94a3b8'},ticks:{color:'#64748b'}}}}
-  });
-
-  // 2. ε vs NTU
-  const ntuData = [], epsData = [], epsCr0 = [], epsCr05 = [], epsCr1 = [];
-  for (let i = 0; i <= 50; i++) {
-    const ntu = i * 0.1;
-    ntuData.push(fmt(ntu,1));
-    [0, 0.5, 1].forEach((cr, idx) => {
-      let ep;
-      if (cr < 0.01) ep = 1 - Math.exp(-ntu);
-      else if (Math.abs(cr-1) < 0.01) ep = ntu / (1 + ntu);
-      else ep = (1 - Math.exp(-ntu*(1-cr))) / (1 - cr*Math.exp(-ntu*(1-cr)));
-      [epsCr0, epsCr05, epsCr1][idx].push(ep * 100);
-    });
-  }
-  charts.ntu = new Chart(document.getElementById('chartNTU'), {
-    type: 'line',
-    data: {
-      labels: ntuData,
-      datasets: [
-        {label: 'Cr=0 (condenseur)', data: epsCr0, borderColor: '#10b981', borderWidth: 1.5, pointRadius: 0, tension: 0.3},
-        {label: 'Cr=0.5', data: epsCr05, borderColor: '#f59e0b', borderWidth: 1.5, pointRadius: 0, tension: 0.3},
-        {label: 'Cr=1', data: epsCr1, borderColor: '#ef4444', borderWidth: 1.5, pointRadius: 0, tension: 0.3},
-        {label: 'Point de fonctionnement', data: ntuData.map((n,i) => Math.abs(parseFloat(n)-R.NTU)<0.1 ? R.epsilon*100 : null), borderColor: '#fff', backgroundColor: '#f59e0b', pointRadius: 8, pointStyle: 'star', showLine: false}
-      ]
-    },
-    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8'}}},scales:{x:{title:{display:true,text:'NTU',color:'#94a3b8'},ticks:{color:'#64748b',maxTicksLimit:10}},y:{title:{display:true,text:'Efficacité ε (%)',color:'#94a3b8'},ticks:{color:'#64748b'},min:0,max:100}}}
-  });
-
-  // 3. ΔP vs Débit
-  const flowMult = [], dpTubeData = [], dpShellData = [];
-  for (let i = 2; i <= 20; i++) {
-    const mult = i / 10;
-    flowMult.push(fmt(mult * 100, 0) + '%');
-    dpTubeData.push(R.dP_tube * mult * mult);
-    dpShellData.push(R.dP_shell * mult * mult);
-  }
-  charts.dp = new Chart(document.getElementById('chartDP'), {
-    type: 'line',
-    data: {
-      labels: flowMult,
-      datasets: [
-        {label: 'ΔP tubes (kPa)', data: dpTubeData, borderColor: '#3b82f6', tension: 0.3, pointRadius: 2},
-        {label: 'ΔP calandre (kPa)', data: dpShellData, borderColor: '#ef4444', tension: 0.3, pointRadius: 2}
-      ]
-    },
-    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8'}}},scales:{x:{title:{display:true,text:'Débit (% nominal)',color:'#94a3b8'},ticks:{color:'#64748b'}},y:{title:{display:true,text:'ΔP (kPa)',color:'#94a3b8'},ticks:{color:'#64748b'}}}}
-  });
-
-  // 4. U vs Débit
-  const uData = [];
-  for (let i = 2; i <= 20; i++) {
-    const mult = i / 10;
-    uData.push(R.Uo * Math.pow(mult, 0.8));
-  }
-  charts.u = new Chart(document.getElementById('chartU'), {
-    type: 'line',
-    data: {
-      labels: flowMult,
-      datasets: [
-        {label: 'U global (W/m²·K)', data: uData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3, pointRadius: 2}
-      ]
-    },
-    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8'}}},scales:{x:{title:{display:true,text:'Débit (% nominal)',color:'#94a3b8'},ticks:{color:'#64748b'}},y:{title:{display:true,text:'U (W/m²·K)',color:'#94a3b8'},ticks:{color:'#64748b'}}}}
-  });
-
-  // 5. Diagramme Q-T
-  const qtLabels = ['0', fmt(R.Q*0.25,0), fmt(R.Q*0.5,0), fmt(R.Q*0.75,0), fmt(R.Q,0)];
-  const qtHot = [R.hTin, R.hTin-(R.hTin-R.hTout)*0.25, R.hTin-(R.hTin-R.hTout)*0.5, R.hTin-(R.hTin-R.hTout)*0.75, R.hTout];
-  const qtCold = [R.cTin, R.cTin+(R.cTout-R.cTin)*0.25, R.cTin+(R.cTout-R.cTin)*0.5, R.cTin+(R.cTout-R.cTin)*0.75, R.cTout];
-  charts.qt = new Chart(document.getElementById('chartQT'), {
-    type: 'line',
-    data: {
-      labels: qtLabels,
-      datasets: [
-        {label: 'Courbe chaude', data: qtHot, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.15)', fill: '+1', tension: 0.1, pointRadius: 4},
-        {label: 'Courbe froide', data: qtCold, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.15)', tension: 0.1, pointRadius: 4}
-      ]
-    },
-    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8'}}},scales:{x:{title:{display:true,text:'Puissance échangée Q (kW)',color:'#94a3b8'},ticks:{color:'#64748b'}},y:{title:{display:true,text:'Température (°C)',color:'#94a3b8'},ticks:{color:'#64748b'}}}}
-  });
+// ===================== FOURNISSEURS =====================
+function renderSuppliers(){
+  const tm={'st':['st','custom','pshe'],'phe':['phe','bphe','welded','shellplate'],'sp':['spiral'],'ac':['ac','finned']};
+  const rel=tm[R.hxTag]||['st','phe'];
+  const filt=SUPPLIERS.filter(s=>s.types.some(t=>rel.includes(t)));
+  const oth=SUPPLIERS.filter(s=>!filt.includes(s));
+  document.getElementById('supplierFilter').innerHTML=`<strong>Type :</strong> ${R.hxType} — ${filt.length} fournisseurs spécialisés.`;
+  let h='<h3 style="color:var(--acc);margin:1rem 0 .5rem">Recommandés</h3><div class="supplier-grid">';
+  filt.forEach(s=>{h+=`<div class="supplier-card"><h4>${s.logo} ${s.name}</h4><div class="country">${s.country}</div><div class="spec">${s.spec}</div><a href="${s.url}" target="_blank">${s.url.replace('https://','')}</a></div>`;});
+  h+='</div>';
+  if(oth.length){h+='<h3 style="color:var(--t3);margin:1.5rem 0 .5rem">Autres fournisseurs</h3><div class="supplier-grid">';
+  oth.forEach(s=>{h+=`<div class="supplier-card" style="opacity:0.6"><h4>${s.logo} ${s.name}</h4><div class="country">${s.country}</div><div class="spec">${s.spec}</div><a href="${s.url}" target="_blank">${s.url.replace('https://','')}</a></div>`;});
+  h+='</div>';}
+  document.getElementById('supplierGrid').innerHTML=h;
 }
 
-// ===================== RENDU FOURNISSEURS =====================
-function renderSuppliers() {
-  const typeMap = {'st':['st','custom','pshe'],'phe':['phe','bphe','welded','shellplate'],'sp':['spiral'],'ac':['ac','finned']};
-  const relevantTypes = typeMap[R.hxTypeTag] || ['st','phe'];
-
-  const filtered = SUPPLIERS.filter(s => s.types.some(t => relevantTypes.includes(t)));
-  const others = SUPPLIERS.filter(s => !filtered.includes(s));
-
-  document.getElementById('supplierFilter').innerHTML = `<strong>Type recommandé :</strong> ${R.hxType} — ${filtered.length} fournisseurs spécialisés identifiés.`;
-
-  let html = '<h3 style="color:var(--acc);margin:1rem 0 .5rem">Fournisseurs recommandés</h3><div class="supplier-grid">';
-  filtered.forEach(s => {
-    html += `<div class="supplier-card">
-      <h4>${s.logo} ${s.name}</h4>
-      <div class="country">${s.country}</div>
-      <div class="spec">${s.spec}</div>
-      <a href="${s.url}" target="_blank">🔗 ${s.url.replace('https://','')}</a>
-    </div>`;
-  });
-  html += '</div>';
-
-  if (others.length > 0) {
-    html += '<h3 style="color:var(--t3);margin:1.5rem 0 .5rem">Autres fournisseurs</h3><div class="supplier-grid">';
-    others.forEach(s => {
-      html += `<div class="supplier-card" style="opacity:0.6">
-        <h4>${s.logo} ${s.name}</h4>
-        <div class="country">${s.country}</div>
-        <div class="spec">${s.spec}</div>
-        <a href="${s.url}" target="_blank">🔗 ${s.url.replace('https://','')}</a>
-      </div>`;
-    });
-    html += '</div>';
-  }
-
-  document.getElementById('supplierGrid').innerHTML = html;
-}
-
-// ===================== RENDU FICHE DE SPÉCIFICATION =====================
-function renderSpec() {
-  document.getElementById('noSpec').style.display = 'none';
-  document.getElementById('specContent').style.display = 'block';
-
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('specSheet').innerHTML = `
-  <div class="spec-sheet" id="specPrint">
+// ===================== FICHE SPEC =====================
+function renderSpec(){
+  document.getElementById('noSpec').style.display='none';
+  document.getElementById('specContent').style.display='block';
+  const d=new Date().toISOString().split('T')[0];
+  const pName=R.op==='cooling'?R.pf.name:R.uf.name;
+  const uName=R.op==='cooling'?R.uf.name:R.pf.name;
+  document.getElementById('specSheet').innerHTML=`<div class="spec-sheet" id="specPrint">
     <h2>FICHE DE SPÉCIFICATION — ÉCHANGEUR DE CHALEUR</h2>
     <table>
       <tr class="section-title"><td colspan="4">1. INFORMATIONS GÉNÉRALES</td></tr>
-      <tr><td width="25%">Client</td><td><input id="spClient" value=""></td><td width="25%">N° Document</td><td><input id="spDocNum" value="HX-${today.replace(/-/g,'')}-001"></td></tr>
-      <tr><td>Projet</td><td><input id="spProject" value=""></td><td>Révision</td><td><input id="spRev" value="A"></td></tr>
-      <tr><td>Service</td><td><input id="spService" value="${R.hf.name} / ${R.cf.name}"></td><td>Date</td><td>${today}</td></tr>
-      <tr><td>Tag N°</td><td><input id="spTag" value="E-"></td><td>Type TEMA</td><td>${R.temaType}</td></tr>
-
+      <tr><td>Client</td><td><input value=""></td><td>N° Doc</td><td><input value="HX-${d.replace(/-/g,'')}-001"></td></tr>
+      <tr><td>Projet</td><td><input value=""></td><td>Rév.</td><td><input value="A"></td></tr>
+      <tr><td>Service</td><td><input value="${R.pf.name} / ${R.uf.name}"></td><td>Date</td><td>${d}</td></tr>
+      <tr><td>Tag</td><td><input value="E-"></td><td>TEMA</td><td>${R.temaType}</td></tr>
       <tr class="section-title"><td colspan="4">2. DONNÉES PROCÉDÉ</td></tr>
       <tr><th></th><th>Côté Chaud (Calandre)</th><th>Côté Froid (Tubes)</th><th>Unité</th></tr>
       <tr><td>Fluide</td><td>${R.hf.name}</td><td>${R.cf.name}</td><td></td></tr>
-      <tr><td>Débit massique</td><td>${fmt(R.hFlow,0)}</td><td>${fmt(R.cFlow,0)}</td><td>kg/h</td></tr>
-      <tr><td>Température entrée</td><td>${fmt(R.hTin,1)}</td><td>${fmt(R.cTin,1)}</td><td>°C</td></tr>
-      <tr><td>Température sortie</td><td>${fmt(R.hTout,1)}</td><td>${fmt(R.cTout,1)}</td><td>°C</td></tr>
-      <tr><td>Pression service</td><td>${fmt(v('hP'),1)}</td><td>${fmt(v('cP'),1)}</td><td>bar abs</td></tr>
-      <tr><td>État</td><td>${R.hState}</td><td>${R.cState}</td><td></td></tr>
-      <tr><td>Masse volumique</td><td>${fmt(R.hf.rho,0)}</td><td>${fmt(R.cf.rho,0)}</td><td>kg/m³</td></tr>
-      <tr><td>Viscosité</td><td>${fmt(R.hf.mu,2)}</td><td>${fmt(R.cf.mu,2)}</td><td>mPa·s</td></tr>
+      <tr><td>Débit</td><td>${fmt(R.hFlow,0)}</td><td>${fmt(R.cFlow,0)}</td><td>kg/h</td></tr>
+      <tr><td>T entrée</td><td>${fmt(R.hTin,1)}</td><td>${fmt(R.cTin,1)}</td><td>°C</td></tr>
+      <tr><td>T sortie</td><td>${fmt(R.hTout,1)}</td><td>${fmt(R.cTout,1)}</td><td>°C</td></tr>
+      <tr><td>Pression</td><td>${fmt(val('procP'),1)}</td><td>${fmt(val('utilP'),1)}</td><td>bar</td></tr>
+      <tr><td>ρ</td><td>${fmt(R.hf.rho,0)}</td><td>${fmt(R.cf.rho,0)}</td><td>kg/m³</td></tr>
+      <tr><td>μ</td><td>${fmt(R.hf.mu,2)}</td><td>${fmt(R.cf.mu,2)}</td><td>mPa·s</td></tr>
       <tr><td>Cp</td><td>${fmt(R.hf.cp,2)}</td><td>${fmt(R.cf.cp,2)}</td><td>kJ/(kg·K)</td></tr>
-      <tr><td>Conductivité</td><td>${fmt(R.hf.lam,3)}</td><td>${fmt(R.cf.lam,3)}</td><td>W/(m·K)</td></tr>
+      <tr><td>λ</td><td>${fmt(R.hf.lam,3)}</td><td>${fmt(R.cf.lam,3)}</td><td>W/(m·K)</td></tr>
       <tr><td>Fouling</td><td>${fmtE(R.foulH)}</td><td>${fmtE(R.foulC)}</td><td>m²·K/W</td></tr>
-      <tr><td>ΔP admissible</td><td>${fmt(v('dPh'),0)}</td><td>${fmt(v('dPc'),0)}</td><td>kPa</td></tr>
-      <tr><td>ΔP calculée</td><td>${fmt(R.dP_shell,1)}</td><td>${fmt(R.dP_tube,1)}</td><td>kPa</td></tr>
-
-      <tr class="section-title"><td colspan="4">3. PERFORMANCES THERMIQUES</td></tr>
-      <tr><td>Puissance thermique</td><td colspan="2">${fmt(R.Q,1)}</td><td>kW</td></tr>
-      <tr><td>DTLM</td><td colspan="2">${fmt(R.LMTD,1)}</td><td>°C</td></tr>
-      <tr><td>Facteur de correction F</td><td colspan="2">${fmt(R.F,3)}</td><td></td></tr>
-      <tr><td>DTLM corrigé</td><td colspan="2">${fmt(R.LMTD_corr,1)}</td><td>°C</td></tr>
-      <tr><td>Coefficient U</td><td colspan="2">${fmt(R.Uo,0)}</td><td>W/(m²·K)</td></tr>
-      <tr><td>Surface nette</td><td colspan="2">${fmt(R.A_net,2)}</td><td>m²</td></tr>
-      <tr><td>Surface design (+${R.overdesign*100}%)</td><td colspan="2">${fmt(R.A_design,2)}</td><td>m²</td></tr>
-      <tr><td>Efficacité ε</td><td colspan="2">${fmt(R.epsilon*100,1)}</td><td>%</td></tr>
-
-      <tr class="section-title"><td colspan="4">4. CONSTRUCTION MÉCANIQUE</td></tr>
-      <tr><td>Type d'échangeur</td><td colspan="3">${R.hxType} — TEMA ${R.temaType}</td></tr>
-      <tr><td>Diamètre calandre</td><td colspan="2">${fmt(R.Ds,0)}</td><td>mm</td></tr>
-      <tr><td>Nombre de tubes</td><td colspan="2">${R.nTubes}</td><td></td></tr>
-      <tr><td>Dimensions tubes (OD×ép)</td><td colspan="2">${fmt(R.tubeOD,2)} × ${fmt((R.tubeOD-R.tubeID)/2,2)}</td><td>mm</td></tr>
-      <tr><td>Longueur tubes</td><td colspan="2">${fmt(R.Ltube*1000,0)}</td><td>mm</td></tr>
-      <tr><td>Pas (pitch)</td><td colspan="2">${fmt(R.tubePitch,2)} — Triangulaire 30°</td><td>mm</td></tr>
-      <tr><td>Passes tubes</td><td colspan="2">${R.nPasses}</td><td></td></tr>
-      <tr><td>Matériau tubes</td><td colspan="3">${MAT_NAMES[R.matTube]}</td></tr>
-      <tr><td>Matériau calandre</td><td colspan="3">${MAT_NAMES[R.matShell]}</td></tr>
-
+      <tr><td>ΔP calc.</td><td>${fmt(R.dP_shell,1)}</td><td>${fmt(R.dP_tube,1)}</td><td>kPa</td></tr>
+      <tr class="section-title"><td colspan="4">3. PERFORMANCES</td></tr>
+      <tr><td>Q</td><td colspan="2">${fmt(R.Q,1)}</td><td>kW</td></tr>
+      <tr><td>DTLM corr.</td><td colspan="2">${fmt(R.LMTD_c,1)}</td><td>°C</td></tr>
+      <tr><td>U</td><td colspan="2">${fmt(R.Uo,0)}</td><td>W/(m²·K)</td></tr>
+      <tr><td>Surface design</td><td colspan="2">${fmt(R.A_design,2)}</td><td>m²</td></tr>
+      <tr class="section-title"><td colspan="4">4. CONSTRUCTION</td></tr>
+      <tr><td>Type</td><td colspan="3">${R.hxType} — TEMA ${R.temaType}</td></tr>
+      <tr><td>Ø calandre</td><td colspan="2">${fmt(R.Ds,0)}</td><td>mm</td></tr>
+      <tr><td>Tubes</td><td colspan="2">${R.nTubes} × Ø${fmt(R.tubeOD,1)} × ${fmt(R.Ltube*1000,0)} mm</td></tr>
+      <tr><td>Passes</td><td colspan="2">${R.nPasses}</td><td></td></tr>
+      <tr><td>Mat. tubes</td><td colspan="3">${MAT_NAMES[R.matTube]}</td></tr>
+      <tr><td>Mat. calandre</td><td colspan="3">${MAT_NAMES[R.matShell]}</td></tr>
       <tr class="section-title"><td colspan="4">5. CONDITIONS DE DESIGN</td></tr>
-      <tr><td>Pression design calandre</td><td><input value="${fmt(Math.ceil(v('hP')*1.1/0.5)*0.5,1)}"></td><td>Pression design tubes</td><td><input value="${fmt(Math.ceil(v('cP')*1.1/0.5)*0.5,1)}"></td></tr>
-      <tr><td colspan="2">bar g</td><td colspan="2">bar g</td></tr>
-      <tr><td>Temp. design calandre</td><td><input value="${fmt(Math.ceil((R.Tmax+20)/10)*10,0)}"></td><td>Temp. design tubes</td><td><input value="${fmt(Math.ceil((R.Tmax+20)/10)*10,0)}"></td></tr>
-      <tr><td colspan="2">°C</td><td colspan="2">°C</td></tr>
-
+      <tr><td>P design</td><td><input value="${fmt(Math.ceil(R.Pmax*1.1/0.5)*0.5,1)}"> bar g</td><td><input value="${fmt(Math.ceil(R.Pmax*1.1/0.5)*0.5,1)}"> bar g</td><td></td></tr>
+      <tr><td>T design</td><td><input value="${fmt(Math.ceil((R.Tmax+20)/10)*10,0)}"> °C</td><td><input value="${fmt(Math.ceil((R.Tmax+20)/10)*10,0)}"> °C</td><td></td></tr>
       <tr class="section-title"><td colspan="4">6. CODES & NORMES</td></tr>
-      <tr><td>Code de construction</td><td colspan="3"><input value="ASME VIII Div.1 / EN 13445"></td></tr>
-      <tr><td>Standard échangeur</td><td colspan="3"><input value="TEMA R (Refinery) / API 660"></td></tr>
-      <tr><td>Directive PED</td><td colspan="3"><input value="2014/68/EU — Catégorie III"></td></tr>
-
+      <tr><td>Code</td><td colspan="3"><input value="ASME VIII Div.1 / EN 13445"></td></tr>
+      <tr><td>Standard HX</td><td colspan="3"><input value="TEMA R / API 660"></td></tr>
+      <tr><td>PED</td><td colspan="3"><input value="2014/68/EU — Cat. III"></td></tr>
       <tr class="section-title"><td colspan="4">7. NOTES</td></tr>
-      <tr><td colspan="4"><textarea style="width:100%;min-height:60px;border:1px solid #ccc;padding:.5rem;font-family:DM Sans;font-size:.8rem" placeholder="Notes complémentaires..."></textarea></td></tr>
+      <tr><td colspan="4"><textarea style="width:100%;min-height:60px;border:1px solid #ccc;padding:.5rem;font-family:DM Sans;font-size:.8rem" placeholder="Notes..."></textarea></td></tr>
     </table>
-    <div style="text-align:center;margin-top:1rem;font-size:.75rem;color:#999">
-      Généré par HeatXAI — ${today} — Document pour demande de chiffrage fournisseur
-    </div>
-  </div>`;
+    <div style="text-align:center;margin-top:1rem;font-size:.75rem;color:#999">HeatXAI — ${d}</div></div>`;
 }
+function printSpec(){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('print-target'));document.getElementById('p-datasheet').classList.add('print-target');window.print();}
 
-function printSpec() {
-  document.querySelectorAll('.panel').forEach(p => { p.classList.remove('print-target'); });
-  document.getElementById('p-datasheet').classList.add('print-target');
-  window.print();
-}
-
-// ===================== RENDU RAPPORT =====================
-function renderReport() {
-  document.getElementById('noReport').style.display = 'none';
-  document.getElementById('reportContent').style.display = 'block';
-
-  document.getElementById('reportSheet').innerHTML = `
-  <div class="spec-sheet" id="reportPrint">
-    <h2>RAPPORT TECHNIQUE — DIMENSIONNEMENT ÉCHANGEUR DE CHALEUR</h2>
-    <p style="text-align:center;color:#666;margin-bottom:1.5rem">Généré par HeatXAI — ${new Date().toISOString().split('T')[0]}</p>
-
-    <h3 style="color:var(--accD);border-bottom:2px solid var(--acc);padding-bottom:.3rem">1. Objet</h3>
-    <p>Ce rapport présente le dimensionnement préliminaire d'un échangeur de chaleur pour le service <strong>${R.hf.name} / ${R.cf.name}</strong>.
-    L'objectif est de transférer <strong>${fmt(R.Q,1)} kW</strong> du fluide chaud (${R.hf.name}, ${fmt(R.hTin,0)}→${fmt(R.hTout,0)}°C)
-    vers le fluide froid (${R.cf.name}, ${fmt(R.cTin,0)}→${fmt(R.cTout,0)}°C).</p>
-
-    <h3 style="color:var(--accD);border-bottom:2px solid var(--acc);padding-bottom:.3rem;margin-top:1.5rem">2. Hypothèses de calcul</h3>
-    <ul>
-      <li>Régime permanent, propriétés physiques à température moyenne</li>
-      <li>Configuration : ${R.config === 'counter' ? 'contre-courant' : R.config === 'parallel' ? 'co-courant' : R.config}</li>
-      <li>Méthode DTLM avec facteur de correction F = ${fmt(R.F,3)}</li>
-      <li>Corrélation côté tubes : ${R.Re_tube > 10000 ? 'Dittus-Boelter (turbulent)' : 'Sieder-Tate (transition/laminaire)'}</li>
-      <li>Corrélation côté calandre : ${R.hState==='condensation' ? 'Nusselt (condensation film)' : 'Kern'}</li>
-      <li>Facteurs d'encrassement TEMA : chaud ${fmtE(R.foulH)} / froid ${fmtE(R.foulC)} m²·K/W</li>
-      <li>Surdesign appliqué : +${R.overdesign*100}%</li>
-    </ul>
-
-    <h3 style="color:var(--accD);border-bottom:2px solid var(--acc);padding-bottom:.3rem;margin-top:1.5rem">3. Résultats principaux</h3>
-    <table>
-      <tr><th>Paramètre</th><th>Valeur</th><th>Unité</th></tr>
-      <tr><td>Puissance thermique Q</td><td>${fmt(R.Q,1)}</td><td>kW</td></tr>
-      <tr><td>DTLM corrigé</td><td>${fmt(R.LMTD_corr,1)}</td><td>°C</td></tr>
-      <tr><td>Coefficient global U</td><td>${fmt(R.Uo,0)}</td><td>W/(m²·K)</td></tr>
-      <tr><td>Surface d'échange (design)</td><td>${fmt(R.A_design,1)}</td><td>m²</td></tr>
-      <tr><td>Efficacité thermique ε</td><td>${fmt(R.epsilon*100,1)}</td><td>%</td></tr>
-      <tr><td>NTU</td><td>${fmt(R.NTU,2)}</td><td>—</td></tr>
-    </table>
-
-    <h3 style="color:var(--accD);border-bottom:2px solid var(--acc);padding-bottom:.3rem;margin-top:1.5rem">4. Équipement sélectionné</h3>
+// ===================== RAPPORT =====================
+function renderReport(){
+  document.getElementById('noReport').style.display='none';
+  document.getElementById('reportContent').style.display='block';
+  const d=new Date().toISOString().split('T')[0];
+  const opLabel=R.op==='cooling'?'refroidissement':'chauffage';
+  document.getElementById('reportSheet').innerHTML=`<div class="spec-sheet" id="reportPrint">
+    <h2>RAPPORT TECHNIQUE — DIMENSIONNEMENT ÉCHANGEUR</h2>
+    <p style="text-align:center;color:#666;margin-bottom:1.5rem">HeatXAI — ${d}</p>
+    <h3 style="color:#d97706;border-bottom:2px solid #f59e0b;padding-bottom:.3rem">1. Objet</h3>
+    <p>${opLabel.charAt(0).toUpperCase()+opLabel.slice(1)} de <strong>${R.pf.name}</strong> (${fmt(R.procFlow,0)} kg/h)
+    de ${fmt(R.procTin,0)}°C à <strong>${fmt(R.procTout,1)}°C</strong> en utilisant <strong>${R.uf.name}</strong> comme utilité.
+    Puissance : <strong>${fmt(R.Q,1)} kW</strong>.</p>
+    <h3 style="color:#d97706;border-bottom:2px solid #f59e0b;padding-bottom:.3rem;margin-top:1.5rem">2. Hypothèses</h3>
+    <ul><li>Régime permanent, propriétés à température moyenne</li>
+    <li>Configuration : ${R.config}</li><li>F = ${fmt(R.F,3)}</li>
+    <li>Corrélation tubes : ${R.Re_tube>10000?'Dittus-Boelter':'Sieder-Tate'}</li>
+    <li>Corrélation calandre : ${R.hState==='condensation'?'Nusselt condensation':'Kern'}</li>
+    <li>Fouling TEMA : ${fmtE(R.foulH)} / ${fmtE(R.foulC)} m²·K/W</li>
+    <li>Surdesign : +${(R.overdesign*100).toFixed(0)}%</li></ul>
+    <h3 style="color:#d97706;border-bottom:2px solid #f59e0b;padding-bottom:.3rem;margin-top:1.5rem">3. Résultats</h3>
+    <table><tr><th>Paramètre</th><th>Valeur</th><th>Unité</th></tr>
+    <tr><td>Q</td><td>${fmt(R.Q,1)}</td><td>kW</td></tr>
+    <tr><td>DTLM corr.</td><td>${fmt(R.LMTD_c,1)}</td><td>°C</td></tr>
+    <tr><td>U</td><td>${fmt(R.Uo,0)}</td><td>W/(m²·K)</td></tr>
+    <tr><td>Surface design</td><td>${fmt(R.A_design,1)}</td><td>m²</td></tr>
+    <tr><td>ε</td><td>${fmt(R.epsilon*100,1)}</td><td>%</td></tr>
+    <tr><td>Débit utilité calculé</td><td>${fmt(R.utilFlow,0)}</td><td>kg/h</td></tr>
+    <tr><td>T sortie utilité</td><td>${fmt(R.utilTout,1)}</td><td>°C</td></tr></table>
+    <h3 style="color:#d97706;border-bottom:2px solid #f59e0b;padding-bottom:.3rem;margin-top:1.5rem">4. Équipement</h3>
     <p><strong>${R.hxType}</strong> — TEMA ${R.temaType}</p>
-    <table>
-      <tr><td>Diamètre calandre</td><td>${fmt(R.Ds,0)} mm</td></tr>
-      <tr><td>Nombre de tubes × dimensions</td><td>${R.nTubes} × Ø${fmt(R.tubeOD,1)}mm × ${fmt(R.Ltube*1000,0)}mm</td></tr>
-      <tr><td>Passes tubes</td><td>${R.nPasses}</td></tr>
-      <tr><td>Matériau tubes / calandre</td><td>${MAT_NAMES[R.matTube]} / ${MAT_NAMES[R.matShell]}</td></tr>
-    </table>
-
-    <h3 style="color:var(--accD);border-bottom:2px solid var(--acc);padding-bottom:.3rem;margin-top:1.5rem">5. Vérifications</h3>
-    <table>
-      <tr><th>Paramètre</th><th>Valeur</th><th>Limite</th><th>Statut</th></tr>
-      <tr><td>ΔP tubes</td><td>${fmt(R.dP_tube,1)} kPa</td><td>${v('dPh')} kPa</td><td>${R.dP_tube<=v('dPh')?'✅ OK':'❌ NOK'}</td></tr>
-      <tr><td>ΔP calandre</td><td>${fmt(R.dP_shell,1)} kPa</td><td>${v('dPc')} kPa</td><td>${R.dP_shell<=v('dPc')?'✅ OK':'❌ NOK'}</td></tr>
-      <tr><td>Vitesse tubes</td><td>${fmt(R.vTube,2)} m/s</td><td>0.5–3.0 m/s</td><td>${R.vTube>=0.5&&R.vTube<=3?'✅ OK':'⚠️ Hors plage'}</td></tr>
-      <tr><td>Vitesse calandre</td><td>${fmt(R.vShell,2)} m/s</td><td>0.3–1.5 m/s</td><td>${R.vShell>=0.3&&R.vShell<=1.5?'✅ OK':'⚠️ Hors plage'}</td></tr>
-      <tr><td>Régime d'écoulement</td><td>Re = ${fmt(R.Re_tube,0)}</td><td>> 10 000</td><td>${R.Re_tube>10000?'✅ Turbulent':'⚠️ '+( R.Re_tube>2300?'Transition':'Laminaire')}</td></tr>
-    </table>
-
-    <h3 style="color:var(--accD);border-bottom:2px solid var(--acc);padding-bottom:.3rem;margin-top:1.5rem">6. Recommandations</h3>
-    <ul>
-      ${R.dP_tube > v('dPh') ? '<li>Réduire le nombre de passes tubes ou augmenter le nombre de tubes pour diminuer ΔP côté tubes.</li>' : ''}
-      ${R.dP_shell > v('dPc') ? '<li>Augmenter l\'espacement des chicanes ou le diamètre calandre pour diminuer ΔP côté calandre.</li>' : ''}
-      ${R.vTube < 0.5 ? '<li>Vitesse tubes faible : risque d\'encrassement. Envisager de réduire le nombre de tubes.</li>' : ''}
-      ${R.vTube > 3 ? '<li>Vitesse tubes élevée : risque d\'érosion. Augmenter le nombre de tubes.</li>' : ''}
-      <li>Vérifier la compatibilité des matériaux avec les fluides process (corrosion).</li>
-      <li>Dimensionnement préliminaire — confirmer par simulation détaillée (HTRI/Aspen EDR) avant fabrication.</li>
-      <li>Consulter les fournisseurs identifiés dans l'onglet Fournisseurs pour chiffrage.</li>
-    </ul>
-
-    <div style="text-align:center;margin-top:2rem;padding-top:1rem;border-top:1px solid #ccc;font-size:.75rem;color:#999">
-      HeatXAI — Rapport de dimensionnement préliminaire — ${new Date().toISOString().split('T')[0]}
-    </div>
-  </div>`;
+    <table><tr><td>Calandre</td><td>Ø${fmt(R.Ds,0)} mm</td></tr>
+    <tr><td>Tubes</td><td>${R.nTubes} × Ø${fmt(R.tubeOD,1)} × ${fmt(R.Ltube*1000,0)} mm</td></tr>
+    <tr><td>Passes</td><td>${R.nPasses}</td></tr>
+    <tr><td>Matériaux</td><td>${MAT_NAMES[R.matTube]} / ${MAT_NAMES[R.matShell]}</td></tr></table>
+    <h3 style="color:#d97706;border-bottom:2px solid #f59e0b;padding-bottom:.3rem;margin-top:1.5rem">5. Vérifications</h3>
+    <table><tr><th>Paramètre</th><th>Valeur</th><th>Limite</th><th>Statut</th></tr>
+    <tr><td>ΔP tubes</td><td>${fmt(R.dP_tube,1)} kPa</td><td>${val('dPproc')} kPa</td><td>${R.dP_tube<=val('dPproc')?'OK':'NOK'}</td></tr>
+    <tr><td>ΔP calandre</td><td>${fmt(R.dP_shell,1)} kPa</td><td>${val('dPutil')} kPa</td><td>${R.dP_shell<=val('dPutil')?'OK':'NOK'}</td></tr>
+    <tr><td>V tubes</td><td>${fmt(R.vTube,2)} m/s</td><td>0.5–3 m/s</td><td>${R.vTube>=0.5&&R.vTube<=3?'OK':'Hors plage'}</td></tr>
+    <tr><td>V calandre</td><td>${fmt(R.vShell,2)} m/s</td><td>0.3–1.5 m/s</td><td>${R.vShell>=0.3&&R.vShell<=1.5?'OK':'Hors plage'}</td></tr></table>
+    <h3 style="color:#d97706;border-bottom:2px solid #f59e0b;padding-bottom:.3rem;margin-top:1.5rem">6. Recommandations</h3>
+    <ul><li>Confirmer par simulation détaillée (HTRI/Aspen EDR) avant fabrication.</li>
+    <li>Consulter les fournisseurs identifiés (onglet Fournisseurs) pour chiffrage.</li>
+    <li>Vérifier compatibilité matériaux / corrosion.</li></ul>
+    <div style="text-align:center;margin-top:2rem;border-top:1px solid #ccc;padding-top:1rem;font-size:.75rem;color:#999">HeatXAI — ${d}</div></div>`;
 }
+function printReport(){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('print-target'));document.getElementById('p-rapport').classList.add('print-target');window.print();}
 
-function printReport() {
-  document.querySelectorAll('.panel').forEach(p => { p.classList.remove('print-target'); });
-  document.getElementById('p-rapport').classList.add('print-target');
-  window.print();
-}
-
-// ===================== INITIALISATION =====================
+// ===================== INIT =====================
 initFluids();
 </script>
 </body>
